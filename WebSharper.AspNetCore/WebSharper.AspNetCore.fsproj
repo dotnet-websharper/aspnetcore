@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ResourceContext.fs" />
+    <Compile Include="WebSharperOptions.fs" />
+    <Compile Include="EnvKey.fs" />
+    <Compile Include="Context.fs" />
+    <Compile Include="Remoting.fs" />
+    <Compile Include="Sitelets.fs" />
+    <Compile Include="ApplicationBuilderExtensions.fs" />
+  </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
+</Project>

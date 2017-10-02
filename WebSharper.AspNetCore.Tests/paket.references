@@ -1,0 +1,6 @@
+Microsoft.AspNetCore.All
+FSharp.Core
+WebSharper.FSharp
+System.Configuration.ConfigurationManager
+Mono.Cecil
+WebSharper.UI.Next

@@ -1,0 +1,8 @@
+bin/
+obj/
+paket-files/
+packages/
+.vs/
+*.user
+WebSharper.AspNetCore.Tests/wwwroot/Content/WebSharper/
+WebSharper.AspNetCore.Tests/wwwroot/Scripts/WebSharper/

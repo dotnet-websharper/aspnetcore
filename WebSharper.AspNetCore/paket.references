@@ -1,0 +1,5 @@
+FSharp.Core
+WebSharper
+Microsoft.AspNetCore.Http.Abstractions
+Microsoft.AspNetCore.Hosting.Abstractions
+Microsoft.AspNetCore.Authentication.Abstractions

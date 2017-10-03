@@ -11,11 +11,7 @@ type Startup() =
 
     member this.ConfigureServices(services: IServiceCollection) =
         services.AddAuthentication("WebSharper")
-            .AddCookie("WebSharper", fun options ->
-                // options.AccessDeniedPath <- PathString "/Account/Forbidden/"
-                // options.LoginPath <- PathString "/Account/Unauthorized/"
-                ()
-            )
+            .AddCookie("WebSharper", fun options -> ())
         |> ignore
 
     member this.Configure(app: IApplicationBuilder, env: IHostingEnvironment) =

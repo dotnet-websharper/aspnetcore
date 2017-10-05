@@ -5,7 +5,9 @@ open System.IO
 open System.Collections.Generic
 open System.Collections.Concurrent
 open System.Reflection
+open System.Runtime.InteropServices
 open Microsoft.AspNetCore.Hosting
+open Microsoft.Extensions.Configuration
 open WebSharper.Sitelets
 module Res = WebSharper.Core.Resources
 module Shared = WebSharper.Web.Shared
@@ -13,9 +15,6 @@ module Shared = WebSharper.Web.Shared
 [<Sealed>]
 type WebSharperOptions
     (
-        meta: WebSharper.Core.Metadata.Info,
-        deps: WebSharper.Core.DependencyGraph.Graph,
-        json: WebSharper.Core.Json.Provider,
         contentRoot: string,
         webRoot: string,
         isDebug: bool,
@@ -56,19 +55,17 @@ type WebSharperOptions
             loaded.[asm.GetName().Name] <- asm
         Array.ofSeq loaded.Values
 
-    let resourceContextCache = ConcurrentDictionary<string, Res.Context>()
-    let getOrAddResourceContext appPath =
-        resourceContextCache.GetOrAdd(appPath, fun appPath ->
-            ResourceContext.Build appPath isDebug meta
-        )
+    static let autoBinDir() =
+        Reflection.Assembly.GetExecutingAssembly().Location
+        |> Path.GetDirectoryName
 
     member val AuthenticationScheme = "WebSharper" with get, set
 
-    member this.Metadata = meta
+    member this.Metadata = Shared.Metadata
 
-    member this.Dependencies = deps
+    member this.Dependencies = Shared.Dependencies
 
-    member this.Json = json
+    member this.Json = Shared.Json
 
     member this.IsDebug = isDebug
 
@@ -78,31 +75,28 @@ type WebSharperOptions
 
     member this.Assemblies = assemblies
 
-    member this.GetOrAddResourceContext appPath = getOrAddResourceContext appPath
-
     member this.Sitelet = sitelet
 
-    new(env: IHostingEnvironment, meta, deps, json, assemblies, sitelet) =
-        WebSharperOptions(meta, deps, json, env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet)
-
-    new(env, binDir, sitelet) =
+    static member Create
+        (
+            env: IHostingEnvironment,
+            [<Optional>] sitelet: Sitelet<'T>,
+            [<Optional>] config: IConfiguration,
+            [<Optional>] binDir: string
+        ) =
+        let binDir =
+            match binDir with
+            | null -> autoBinDir()
+            | d -> d
+        let siteletOpt =
+            if obj.ReferenceEquals(sitelet, null)
+            then None
+            else Some (Sitelet.Upcast sitelet)
+        // Note: must load assemblies and set Context.* before calling Shared.*
         let assemblies =
             discoverAssemblies binDir
             |> loadReferencedAssemblies
-        WebSharperOptions(env, Shared.Metadata, Shared.Dependencies, Shared.Json, assemblies, sitelet)
-
-    static member Create(env, binDir, sitelet) =
-        WebSharperOptions(env, binDir, Some (Sitelet.Upcast sitelet))
-
-    static member Create(env: IHostingEnvironment, sitelet) =
-        let binDir =
-            Reflection.Assembly.GetExecutingAssembly().Location
-            |> Path.GetDirectoryName
-        WebSharperOptions(env, binDir, Some (Sitelet.Upcast sitelet))
-
-    static member Create(env, binDir) =
-        WebSharperOptions(env, binDir, None)
-
-    static member Create(env) =
-        let binDir = ""
-        WebSharperOptions(env, binDir, None)
+        Context.IsDebug <- env.IsDevelopment
+        if not (isNull config) then
+            Context.GetSetting <- fun key -> Option.ofObj config.[key]
+        WebSharperOptions(env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, siteletOpt)

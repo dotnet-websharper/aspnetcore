@@ -4,10 +4,10 @@ source https://api.nuget.org/v3/index.json
 nuget FSharp.Core
 nuget WebSharper
 nuget WebSharper.FSharp
-nuget WebSharper.UI.Next ~> 4.0.0.1
+nuget WebSharper.UI.Next ~> 4.0.10.93
+nuget Microsoft.Extensions.Configuration.Abstractions
 nuget Microsoft.AspNetCore.Authentication.Abstractions
 nuget Microsoft.AspNetCore.Http.Abstractions
 nuget Microsoft.AspNetCore.Hosting.Abstractions
 nuget Microsoft.AspNetCore.All ~> 2.0.0
-nuget System.Configuration.ConfigurationManager
 nuget Mono.Cecil ~> 0.10.0-beta6

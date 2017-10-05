@@ -1,5 +1,6 @@
 module WebSharper.AspNetCore.Context
 
+open System
 open System.Collections.Generic
 open System.Collections.Specialized
 open Microsoft.AspNetCore.Http
@@ -56,6 +57,18 @@ let private buildRequest (req: HttpRequest) =
 type private UserSession(httpCtx: HttpContext, options: WebSharperOptions) =
     let scheme = options.AuthenticationScheme
 
+    let loginUser (username: string) (expiry: option<TimeSpan>) =
+        let identity = System.Security.Principal.GenericIdentity(username)
+        let principal = System.Security.Principal.GenericPrincipal(identity, [||])
+        let props = AuthenticationProperties()
+        props.IsPersistent <- expiry.IsSome
+        props.ExpiresUtc <-
+            match expiry with
+            | None -> Nullable()
+            | Some t -> Nullable(DateTimeOffset.UtcNow.Add(t))
+        httpCtx.SignInAsync(scheme, principal, props)
+        |> Async.AwaitTask
+
     interface WebSharper.Web.IUserSession with
         member this.GetLoggedInUser() =
             match httpCtx.User with
@@ -70,11 +83,14 @@ type private UserSession(httpCtx: HttpContext, options: WebSharperOptions) =
             httpCtx.SignOutAsync(scheme)
             |> Async.AwaitTask
 
-        member this.LoginUser(username, ?persistent) =
-            let identity = System.Security.Principal.GenericIdentity(username)
-            let principal = System.Security.Principal.GenericPrincipal(identity, [||])
-            httpCtx.SignInAsync(scheme, principal)
-            |> Async.AwaitTask
+        member this.LoginUser(username, ?persistent: bool) =
+            if defaultArg persistent false
+                then Some (TimeSpan.FromDays(1000.*365.))
+                else None
+            |> loginUser username 
+
+        member this.LoginUser(username, expiry: TimeSpan) =
+            loginUser username (Some expiry)
 
         member this.IsAvailable = true
 
@@ -100,7 +116,7 @@ let Make (httpCtx: HttpContext) (options: WebSharperOptions) =
         Json = options.Json,
         Metadata = options.Metadata,
         Dependencies = options.Dependencies,
-        ResourceContext = options.GetOrAddResourceContext(appPath),
+        ResourceContext = WebSharper.Web.ResourceContext.ResourceContext appPath,
         Request = req,
         RootFolder = options.ContentRootPath,
         UserSession = UserSession(httpCtx, options)
@@ -110,6 +126,7 @@ let MakeSimple (httpCtx: HttpContext) (options: WebSharperOptions) =
     // TODO make customizable?
     let appPath = "/"
     let uri = RequestUri httpCtx.Request
+    let resourceContext = WebSharper.Web.ResourceContext.ResourceContext appPath
     { new WebSharper.Web.Context() with
         member this.ApplicationPath = appPath
         // TODO use httpCtx.Items? but it's <obj, obj>, not <string, obj>
@@ -117,7 +134,7 @@ let MakeSimple (httpCtx: HttpContext) (options: WebSharperOptions) =
         member this.Json = options.Json
         member this.Metadata = options.Metadata
         member this.Dependencies = options.Dependencies
-        member this.ResourceContext = options.GetOrAddResourceContext(appPath)
+        member this.ResourceContext = resourceContext
         member this.RequestUri = uri
         member this.RootFolder = options.ContentRootPath
         member this.UserSession = UserSession(httpCtx, options) :> _

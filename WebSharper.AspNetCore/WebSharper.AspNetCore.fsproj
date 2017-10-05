@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ResourceContext.fs" />
     <Compile Include="WebSharperOptions.fs" />
     <Compile Include="EnvKey.fs" />
     <Compile Include="Context.fs" />

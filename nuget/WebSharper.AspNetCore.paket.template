@@ -1,0 +1,17 @@
+type file
+id WebSharper.UI.Next
+authors
+    IntelliFactory
+owners
+    IntelliFactory
+licenseUrl http://websharper.com/licensing
+projectUrl https://github.com/intellifactory/websharper.aspnetcore
+description
+    Wrappers for hosting WebSharper sitelets and remoting components in ASP.NET Core projects
+tags
+    Web JavaScript F# C#
+files
+    ../WebSharper.AspNetCore/bin/Release/netstandard2.0/WebSharper.AspNetCore.dll ==> lib/netstandard2.0
+    ../WebSharper.AspNetCore/bin/Release/netstandard2.0/WebSharper.AspNetCore.xml ==> lib/netstandard2.0
+dependencies
+    WebSharper LOCKEDVERSION

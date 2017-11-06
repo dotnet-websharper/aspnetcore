@@ -1,5 +1,5 @@
 type file
-id WebSharper.UI.Next
+id WebSharper.AspNetCore
 authors
     IntelliFactory
 owners

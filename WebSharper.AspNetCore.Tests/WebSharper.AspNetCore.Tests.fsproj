@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <WebSharperProject>Website</WebSharperProject>
     <WebProjectOutputDir>$(MSBuildThisFileDirectory)/wwwroot</WebProjectOutputDir>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
+
   <ItemGroup>
-    <Content Include="Main.html" />
     <Compile Include="Website.fs" />
     <Compile Include="Startup.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\WebSharper.AspNetCore\WebSharper.AspNetCore.fsproj" />
   </ItemGroup>
+
   <Import Project="..\.paket\Paket.Restore.targets" />
+  
 </Project>

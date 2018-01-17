@@ -2,4 +2,4 @@ Microsoft.AspNetCore.All
 FSharp.Core
 WebSharper.FSharp
 Mono.Cecil
-WebSharper.UI.Next
+WebSharper.UI

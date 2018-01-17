@@ -1,17 +1,17 @@
-version 5.108.0
+version 5.122.3
 source https://api.nuget.org/v3/index.json
 source https://nuget.intellifactory.com/nuget username: "%IF_USER%" password: "%IF_PASS%"
 
 storage: none
 
 nuget FSharp.Core
-nuget WebSharper 4.0.194.125-staging
-nuget WebSharper.FSharp 4.0.194.125-staging
-nuget WebSharper.UI.Next staging
-nuget Microsoft.Extensions.Configuration.Abstractions
-nuget Microsoft.AspNetCore.Authentication.Abstractions
-nuget Microsoft.AspNetCore.Http.Abstractions
-nuget Microsoft.AspNetCore.Hosting.Abstractions
+nuget WebSharper >= 4.2 alpha
+nuget WebSharper.FSharp >= 4.2 alpha
+nuget WebSharper.UI >= 4.2 alpha
+nuget Microsoft.Extensions.Configuration.Abstractions ~> 2.0.0
+nuget Microsoft.AspNetCore.Authentication.Abstractions ~> 2.0.0
+nuget Microsoft.AspNetCore.Http.Abstractions ~> 2.0.0
+nuget Microsoft.AspNetCore.Hosting.Abstractions ~> 2.0.0
 nuget Microsoft.AspNetCore.All ~> 2.0.0
 nuget Mono.Cecil ~> 0.10.0-beta6
 
@@ -20,5 +20,5 @@ group build
     source https://api.nuget.org/v3/index.json
 
     nuget FAKE
-    nuget Paket.Core 5.108.0
+    nuget Paket.Core 5.122.3
     github intellifactory/websharper tools/WebSharper.Fake.fsx

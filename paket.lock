@@ -854,7 +854,7 @@ NUGET
       System.Security.Cryptography.Csp (>= 4.0) - restriction: && (< net35) (>= netstandard1.3)
       System.Threading (>= 4.0.11) - restriction: && (< net35) (>= netstandard1.3)
     NETStandard.Library (2.0.1) - restriction: >= netcoreapp2.0
-      Microsoft.NETCore.Platforms (>= 1.1)
+      Microsoft.NETCore.Platforms (>= 1.1) - restriction: || (&& (>= monoandroid) (< netstandard1.0)) (&& (< monoandroid) (< net45) (>= netstandard1.2) (< netstandard1.3) (< wpa81)) (&& (< monoandroid) (< net45) (>= netstandard1.3) (< netstandard1.4) (< wpa81)) (&& (< monoandroid) (< net45) (>= netstandard1.4) (< netstandard1.5) (< wpa81)) (&& (< monoandroid) (< net45) (>= netstandard1.5) (< netstandard1.6)) (&& (< monoandroid) (< netstandard1.0) (>= portable-net451+win81+wpa81)) (>= monotouch) (&& (>= net45) (< portable-net451+win81+wpa81)) (&& (< net45) (>= netstandard1.1) (< portable-net451+win81+wpa81)) (&& (< net45) (>= netstandard1.6) (< netstandard2.0)) (&& (< net45) (>= netstandard2.0)) (&& (>= net451) (< netstandard1.3)) (&& (>= net46) (< netstandard1.4)) (>= net461) (>= netcoreapp2.0) (&& (>= netstandard1.0) (< portable-net45+win8+wpa81)) (&& (< netstandard1.0) (>= portable-net45+win8+wp8+wpa81) (< portable-net45+win8+wpa81)) (&& (< netstandard1.0) (>= portable-net45+win8+wpa81) (< portable-net451+win81+wpa81)) (&& (< netstandard1.3) (>= wpa81)) (>= uap10.0) (>= xamarinios) (>= xamarinmac) (>= xamarintvos) (>= xamarinwatchos)
     Newtonsoft.Json (10.0.3) - restriction: >= netcoreapp2.0
       Microsoft.CSharp (>= 4.3) - restriction: || (&& (< net20) (>= netstandard1.0) (< netstandard1.3)) (&& (< net20) (>= netstandard1.3))
       NETStandard.Library (>= 1.6.1) - restriction: || (&& (< net20) (>= netstandard1.0) (< netstandard1.3)) (&& (< net20) (>= netstandard1.3))
@@ -1627,12 +1627,12 @@ NUGET
       Newtonsoft.Json (>= 9.0.1) - restriction: || (&& (< net45) (>= netstandard1.0) (< netstandard1.3) (< win8) (< wp8) (< wpa81)) (&& (< net45) (>= netstandard1.3) (< win8) (< wpa81))
       System.Spatial (>= 5.8.2) - restriction: || (&& (< net45) (>= netstandard1.0) (< netstandard1.3) (< win8) (< wp8) (< wpa81)) (&& (< net45) (>= netstandard1.3) (< win8) (< wpa81))
   remote: https://nuget.intellifactory.com/nuget
-    WebSharper (4.0.194.125-staging)
+    WebSharper (4.2.0.181-alpha)
       Mono.Cecil (>= 0.10.0-beta6 < 0.11.0-beta)
-    WebSharper.FSharp (4.0.194.125-staging)
-      WebSharper (4.0.194.125-staging)
-    WebSharper.UI.Next (4.0.13.104-staging)
-      WebSharper (4.0.194.125-staging)
+    WebSharper.FSharp (4.2.0.181-alpha)
+      WebSharper (4.2.0.181-alpha)
+    WebSharper.UI (4.2.0.43-alpha)
+      WebSharper (>= 4.2.0.181-alpha)
 
 GROUP build
 RESTRICTION: == net45
@@ -1640,12 +1640,12 @@ NUGET
   remote: https://api.nuget.org/v3/index.json
     Chessie (0.6)
       FSharp.Core
-    FAKE (4.64.3)
+    FAKE (4.64.4)
     FSharp.Compiler.Tools (4.1.29)
     FSharp.Core (4.2.3)
     Mono.Cecil (0.10.0-beta7)
     Newtonsoft.Json (10.0.3)
-    Paket.Core (5.108)
+    Paket.Core (5.122.3)
       Chessie (>= 0.6)
       FSharp.Compiler.Tools
       FSharp.Core
@@ -1653,4 +1653,4 @@ NUGET
       Newtonsoft.Json
 GITHUB
   remote: intellifactory/websharper
-    tools/WebSharper.Fake.fsx (8db29bcdbc75994468bbf6c25ecffac0d9e6f49a)
+    tools/WebSharper.Fake.fsx (cc9192a7360f5d4790b7205acb48c8e1380babdb)

@@ -91,7 +91,7 @@ type WebSharperOptions
         let siteletOpt =
             if obj.ReferenceEquals(sitelet, null)
             then None
-            else Some (Sitelet.Upcast sitelet)
+            else Some (Sitelet.Box sitelet)
         // Note: must load assemblies and set Context.* before calling Shared.*
         let assemblies =
             discoverAssemblies binDir

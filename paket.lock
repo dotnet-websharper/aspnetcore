@@ -1631,7 +1631,7 @@ NUGET
       Mono.Cecil (>= 0.10.0-beta6 < 0.11.0-beta)
     WebSharper.FSharp (4.2.0.181-alpha)
       WebSharper (4.2.0.181-alpha)
-    WebSharper.UI (4.2.0.43-alpha)
+    WebSharper.UI (4.2.0.45-alpha)
       WebSharper (>= 4.2.0.181-alpha)
 
 GROUP build

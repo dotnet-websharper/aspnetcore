@@ -23,6 +23,11 @@ module Rpc =
     let Logout() =
         WebSharper.Web.Remoting.GetContext().UserSession.Logout()
 
+type EndPoint =
+    | [<EndPoint "/">] Home
+    | [<EndPoint "POST /post">] Post
+    | [<EndPoint "POST /formdata"; FormData "x">] FormData of x: string 
+
 [<JavaScript>]
 [<Require(typeof<Resources.BaseResource>, "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css")>]
 module Client =
@@ -73,9 +78,31 @@ module Client =
 open WebSharper.UI.Server
 
 let Main =
-    Application.SinglePage(fun ctx ->
-        IndexTemplate()
-            .Main(client <@ Client.Main() @>)
-            .Doc()
-        |> Content.Page
+    Application.MultiPage(fun (ctx: Context<_>) ep ->
+        let readBody() =
+            let i = ctx.Request.Body 
+            if not (isNull i) then 
+                // We need to copy the stream because else StreamReader would close it.
+                use m =
+                    if i.CanSeek then
+                        new System.IO.MemoryStream(int i.Length)
+                    else
+                        new System.IO.MemoryStream()
+                i.CopyTo m
+                if i.CanSeek then
+                    i.Seek(0L, System.IO.SeekOrigin.Begin) |> ignore
+                m.Seek(0L, System.IO.SeekOrigin.Begin) |> ignore
+                use reader = new System.IO.StreamReader(m)
+                reader.ReadToEnd()
+            else "Request body not found"
+        match ep with
+        | Home ->
+            IndexTemplate()
+                .Main(client <@ Client.Main() @>)
+                .Doc()
+            |> Content.Page
+        | FormData i ->
+            Content.Text i
+        | Post ->
+            Content.Text ctx.Request.BodyText
     )

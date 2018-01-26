@@ -32,27 +32,88 @@ let RequestUri (req: HttpRequest) =
         req.QueryString.ToString()
     ).Uri
 
-let private buildRequest (req: HttpRequest) =
-    {
-        Method = Http.Method.OfString req.Method
-        Uri = RequestUri req
-        Headers =
-            [
-                for KeyValue(k, v) in req.Headers do
-                    for x in v do
-                        yield Http.Header.Custom k x
-            ]
-        Post = Http.ParameterCollection([]) // TODO
-        Get =
-            let nv = NameValueCollection()
-            for KeyValue(k, v) in req.Query do
+type private AspNetCoreRequest(req: HttpRequest) =
+    inherit Http.Request()
+
+    let method = Http.Method.OfString req.Method
+    let uri = RequestUri req
+    let mutable post = null
+    let mutable get = null
+    let mutable cookies = null
+
+    override this.Method = method
+    override this.Uri = uri                                     
+    override this.Headers =
+        seq {
+            for KeyValue(k, v) in req.Headers do
                 for x in v do
-                    nv.Add(k, x)
-            Http.ParameterCollection(nv)
-        ServerVariables = Http.ParameterCollection([])
-        Body = req.Body
-        Files = [] // TODO
-    } : Http.Request
+                    yield Http.Header.Custom k x
+        }
+    override this.Body = req.Body
+    override this.Post = 
+        if isNull post then
+            post <-
+                { new Http.ParameterCollection with
+                    member this.Item(name:string) =
+                        match req.Form.TryGetValue name with
+                        | true, v -> Some (string v)
+                        | _ -> None
+                    member this.ToList() =
+                        [
+                            for KeyValue(k, v) in req.Form do
+                                yield (k, string v)
+                        ]    
+                }
+        post
+    override this.Get = 
+        if isNull get then
+            get <-
+                { new Http.ParameterCollection with
+                    member this.Item(name:string) =
+                        match req.Query.TryGetValue name with
+                        | true, v -> Some (string v)
+                        | _ -> None
+                    member this.ToList() =
+                        [
+                            for KeyValue(k, v) in req.Query do
+                                yield (k, string v)
+                        ]    
+                }
+        get
+    override this.ServerVariables = Http.EmptyParameters
+    override this.Files =
+        seq {
+            for f in req.Form.Files do
+                yield { new Http.IPostedFile with
+                    member this.Key = f.Name
+                    member this.ContentLength = int f.Length
+                    member this.ContentType = f.ContentType
+                    member this.FileName = f.FileName
+                    member this.InputStream = f.OpenReadStream()
+                    member this.SaveAs(n) =
+                        use fileStream = System.IO.File.Create(n)
+                        use s = f.OpenReadStream()
+                        s.CopyTo(fileStream)
+                }
+        }
+    override this.Cookies =
+        if isNull cookies then
+            cookies <-
+                { new Http.ParameterCollection with
+                    member this.Item(name:string) =
+                        match req.Cookies.TryGetValue name with
+                        | true, v -> Some (string v)
+                        | _ -> None
+                    member this.ToList() =
+                        [
+                            for KeyValue(k, v) in req.Cookies do
+                                yield (k, string v)
+                        ]    
+                }
+        cookies
+
+let private buildRequest (req: HttpRequest) =
+    AspNetCoreRequest req :> Http.Request
 
 type private UserSession(httpCtx: HttpContext, options: WebSharperOptions) =
     let scheme = options.AuthenticationScheme

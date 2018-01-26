@@ -9,3 +9,4 @@ WebSharper.AspNetCore.Tests/wwwroot/Scripts/WebSharper/
 build/
 .vscode/
 .fake/
+nuget/*.paket.template

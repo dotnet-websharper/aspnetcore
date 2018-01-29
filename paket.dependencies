@@ -5,9 +5,9 @@ source https://nuget.intellifactory.com/nuget username: "%IF_USER%" password: "%
 storage: none
 
 nuget FSharp.Core
-nuget WebSharper >= 4.2 alpha
-nuget WebSharper.FSharp >= 4.2 alpha
-nuget WebSharper.UI >= 4.2 alpha
+nuget WebSharper >= 4.2 prerelease
+nuget WebSharper.FSharp >= 4.2 prerelease
+nuget WebSharper.UI >= 4.2 prerelease
 nuget Microsoft.Extensions.Configuration.Abstractions ~> 2.0.0
 nuget Microsoft.AspNetCore.Authentication.Abstractions ~> 2.0.0
 nuget Microsoft.AspNetCore.Http.Abstractions ~> 2.0.0
@@ -21,4 +21,6 @@ group build
 
     nuget FAKE
     nuget Paket.Core 5.122.3
+
+group wsbuild
     github intellifactory/websharper tools/WebSharper.Fake.fsx

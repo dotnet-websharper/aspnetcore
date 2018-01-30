@@ -159,8 +159,6 @@ type private UserSession(httpCtx: HttpContext, options: WebSharperOptions) =
         member this.IsAvailable = true
 
 let Make (httpCtx: HttpContext) (options: WebSharperOptions) =
-    // TODO make customizable?
-    let appPath = "/"
     let link =
         match options.Sitelet with
         | None ->
@@ -170,35 +168,31 @@ let Make (httpCtx: HttpContext) (options: WebSharperOptions) =
                 match s.Router.Link x with
                 | None -> failwithf "Failed to link to %O" (box x)
                 | Some loc when loc.IsAbsoluteUri -> string loc
-                | Some loc -> appPath ++ string loc
+                | Some loc -> options.ApplicationPath ++ string loc
     let req = buildRequest httpCtx.Request
     new Context<'T>(
-        ApplicationPath = appPath,
-        // TODO use httpCtx.Items? but it's <obj, obj>, not <string, obj>
-        Environment = Dictionary(),
+        ApplicationPath = options.ApplicationPath,
+        Environment = dict ["HttpContext", box httpCtx],
         Link = link,
         Json = options.Json,
         Metadata = options.Metadata,
         Dependencies = options.Dependencies,
-        ResourceContext = WebSharper.Web.ResourceContext.ResourceContext appPath,
+        ResourceContext = options.ResourceContext,
         Request = req,
         RootFolder = options.ContentRootPath,
         UserSession = UserSession(httpCtx, options)
     )
 
 let MakeSimple (httpCtx: HttpContext) (options: WebSharperOptions) =
-    // TODO make customizable?
-    let appPath = "/"
     let uri = RequestUri httpCtx.Request
-    let resourceContext = WebSharper.Web.ResourceContext.ResourceContext appPath
     { new WebSharper.Web.Context() with
-        member this.ApplicationPath = appPath
+        member this.ApplicationPath = options.ApplicationPath
         // TODO use httpCtx.Items? but it's <obj, obj>, not <string, obj>
         member this.Environment = Dictionary() :> _
         member this.Json = options.Json
         member this.Metadata = options.Metadata
         member this.Dependencies = options.Dependencies
-        member this.ResourceContext = resourceContext
+        member this.ResourceContext = options.ResourceContext
         member this.RequestUri = uri
         member this.RootFolder = options.ContentRootPath
         member this.UserSession = UserSession(httpCtx, options) :> _

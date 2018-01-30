@@ -53,17 +53,20 @@ type private AspNetCoreRequest(req: HttpRequest) =
     override this.Post = 
         if isNull post then
             post <-
-                { new Http.ParameterCollection with
-                    member this.Item(name:string) =
-                        match req.Form.TryGetValue name with
-                        | true, v -> Some (string v)
-                        | _ -> None
-                    member this.ToList() =
-                        [
-                            for KeyValue(k, v) in req.Form do
-                                yield (k, string v)
-                        ]    
-                }
+                if req.HasFormContentType then 
+                    { new Http.ParameterCollection with
+                        member this.Item(name:string) =
+                            match req.Form.TryGetValue name with
+                            | true, v -> Some (string v)
+                            | _ -> None
+                        member this.ToList() =
+                            [
+                                for KeyValue(k, v) in req.Form do
+                                    yield (k, string v)
+                            ]    
+                    }
+                else
+                    Http.EmptyParameters
         post
     override this.Get = 
         if isNull get then

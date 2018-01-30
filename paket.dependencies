@@ -5,9 +5,9 @@ source https://nuget.intellifactory.com/nuget username: "%IF_USER%" password: "%
 storage: none
 
 nuget FSharp.Core
-nuget WebSharper >= 4.2 prerelease
-nuget WebSharper.FSharp >= 4.2 prerelease
-nuget WebSharper.UI >= 4.2 prerelease
+nuget WebSharper prerelease
+nuget WebSharper.FSharp prerelease
+nuget WebSharper.UI prerelease
 nuget Microsoft.Extensions.Configuration.Abstractions ~> 2.0.0
 nuget Microsoft.AspNetCore.Authentication.Abstractions ~> 2.0.0
 nuget Microsoft.AspNetCore.Http.Abstractions ~> 2.0.0

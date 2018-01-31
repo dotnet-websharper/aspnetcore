@@ -4,7 +4,7 @@ source https://nuget.intellifactory.com/nuget username: "%IF_USER%" password: "%
 
 storage: none
 
-nuget FSharp.Core
+nuget FSharp.Core ~> 4.2.0
 nuget WebSharper prerelease
 nuget WebSharper.FSharp prerelease
 nuget WebSharper.UI prerelease

@@ -25,6 +25,7 @@ module Rpc =
 
 type EndPoint =
     | [<EndPoint "/">] Home
+    | [<EndPoint "/about">] About
     | [<EndPoint "POST /post">] Post
     | [<EndPoint "POST /formdata"; FormData "x">] FormData of x: string 
 
@@ -44,7 +45,7 @@ module Client =
 
     let Login = Var.Create ""
 
-    let Main() =
+    let Main (aboutPageLink: string) =
         IndexTemplate.Body()
             .ListContainer(
                 ListModel.View Tasks |> Doc.BindSeqCached (fun task ->
@@ -73,6 +74,7 @@ module Client =
                 |> Async.Start
             )
             .Logout(fun _ -> Rpc.Logout() |> Async.Start)
+            .AboutPageLink(aboutPageLink)
             .Doc()
 
 open WebSharper.UI.Server
@@ -97,10 +99,13 @@ let Main =
             else "Request body not found"
         match ep with
         | Home ->
+            let aboutPageLink = ctx.Link About
             IndexTemplate()
-                .Main(client <@ Client.Main() @>)
+                .Main(client <@ Client.Main aboutPageLink @>)
                 .Doc()
             |> Content.Page
+        | About ->
+            Content.Text "This is a test project for WebSharper.AspNetCore"
         | FormData i ->
             Content.Text i
         | Post ->

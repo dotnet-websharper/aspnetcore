@@ -11,7 +11,7 @@ open WebSharper.Sitelets
 [<Extension>]
 type ApplicationBuilderExtensions =
 
-    // Remoting
+    // Remoting                        
 
     [<Extension>]
     static member UseWebSharperRemoting(this: IApplicationBuilder, options: WebSharperOptions) =
@@ -23,9 +23,10 @@ type ApplicationBuilderExtensions =
             this: IApplicationBuilder,
             env: IHostingEnvironment,
             [<Optional>] config: IConfiguration,
-            [<Optional>] binDir: string
+            [<Optional>] binDir: string,
+            [<Optional; DefaultParameterValue "/">] appPath: string
         ) =
-        this.UseWebSharperRemoting(WebSharperOptions.Create(env, unbox null, config, binDir))
+        this.UseWebSharperRemoting(WebSharperOptions.Create(env, unbox null, config, binDir, appPath))
 
     // Sitelets
 
@@ -40,9 +41,10 @@ type ApplicationBuilderExtensions =
             env: IHostingEnvironment,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
-            [<Optional>] binDir: string
+            [<Optional>] binDir: string,
+            [<Optional; DefaultParameterValue "/">] appPath: string
         ) =
-        this.UseWebSharperSitelets(WebSharperOptions.Create(env, sitelet, config, binDir))
+        this.UseWebSharperSitelets(WebSharperOptions.Create(env, sitelet, config, binDir, appPath))
 
     // All
 
@@ -58,6 +60,7 @@ type ApplicationBuilderExtensions =
             env: IHostingEnvironment,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
-            [<Optional>] binDir: string
+            [<Optional>] binDir: string,
+            [<Optional; DefaultParameterValue "/">] appPath: string
         ) =
-        this.UseWebSharper(WebSharperOptions.Create(env, sitelet, config, binDir))
+        this.UseWebSharper(WebSharperOptions.Create(env, sitelet, config, binDir, appPath))

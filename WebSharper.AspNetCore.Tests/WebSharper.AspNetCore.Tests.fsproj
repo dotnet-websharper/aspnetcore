@@ -9,6 +9,7 @@
     <Compile Include="Website.fs" />
     <Compile Include="Startup.fs" />
     <Compile Include="Program.fs" />
+    <Content Include="Main.html" CopyToPublishDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebSharper.AspNetCore\WebSharper.AspNetCore.fsproj" />

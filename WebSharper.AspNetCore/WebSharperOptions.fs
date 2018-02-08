@@ -14,13 +14,13 @@ module Shared = WebSharper.Web.Shared
 
 [<Sealed>]
 type WebSharperOptions
-    internal (
+    internal 
+    (
         contentRoot: string,
         webRoot: string,
         isDebug: bool,
         assemblies: Assembly[],
-        sitelet: option<Sitelet<obj>>,
-        appPath: string
+        sitelet: option<Sitelet<obj>>
     ) =
 
     static let tryLoad(name: AssemblyName) =
@@ -60,8 +60,6 @@ type WebSharperOptions
         Reflection.Assembly.GetExecutingAssembly().Location
         |> Path.GetDirectoryName
       
-    let resCtx = WebSharper.Web.ResourceContext.ResourceContext appPath
-
     member val AuthenticationScheme = "WebSharper" with get, set
 
     member this.Metadata = Shared.Metadata
@@ -80,17 +78,12 @@ type WebSharperOptions
 
     member this.Sitelet = sitelet
 
-    member this.ApplicationPath = appPath
-
-    member internal this.ResourceContext = resCtx
-
     static member Create
         (
             env: IHostingEnvironment,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
-            [<Optional>] binDir: string,
-            [<Optional; DefaultParameterValue "/">] appPath: string
+            [<Optional>] binDir: string
         ) =
         let binDir =
             match binDir with
@@ -107,4 +100,4 @@ type WebSharperOptions
         Context.IsDebug <- env.IsDevelopment
         if not (isNull config) then
             Context.GetSetting <- fun key -> Option.ofObj config.[key]
-        WebSharperOptions(env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, siteletOpt, appPath)
+        WebSharperOptions(env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, siteletOpt)

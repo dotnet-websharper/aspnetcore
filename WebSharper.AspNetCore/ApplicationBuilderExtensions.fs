@@ -23,10 +23,9 @@ type ApplicationBuilderExtensions =
             this: IApplicationBuilder,
             env: IHostingEnvironment,
             [<Optional>] config: IConfiguration,
-            [<Optional>] binDir: string,
-            [<Optional; DefaultParameterValue "/">] appPath: string
+            [<Optional>] binDir: string
         ) =
-        this.UseWebSharperRemoting(WebSharperOptions.Create(env, unbox null, config, binDir, appPath))
+        this.UseWebSharperRemoting(WebSharperOptions.Create(env, unbox null, config, binDir))
 
     // Sitelets
 
@@ -41,10 +40,9 @@ type ApplicationBuilderExtensions =
             env: IHostingEnvironment,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
-            [<Optional>] binDir: string,
-            [<Optional; DefaultParameterValue "/">] appPath: string
+            [<Optional>] binDir: string
         ) =
-        this.UseWebSharperSitelets(WebSharperOptions.Create(env, sitelet, config, binDir, appPath))
+        this.UseWebSharperSitelets(WebSharperOptions.Create(env, sitelet, config, binDir))
 
     // All
 
@@ -60,7 +58,6 @@ type ApplicationBuilderExtensions =
             env: IHostingEnvironment,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
-            [<Optional>] binDir: string,
-            [<Optional; DefaultParameterValue "/">] appPath: string
+            [<Optional>] binDir: string
         ) =
-        this.UseWebSharper(WebSharperOptions.Create(env, sitelet, config, binDir, appPath))
+        this.UseWebSharper(WebSharperOptions.Create(env, sitelet, config, binDir))

@@ -15,7 +15,7 @@ files
     ../WebSharper.AspNetCore/bin/Release/netstandard2.0/WebSharper.AspNetCore.xml ==> lib/netstandard2.0
 dependencies
     WebSharper ~> LOCKEDVERSION/3
-    Microsoft.AspNetCore.Http.Abstractions ~> 2.0.0
-    Microsoft.AspNetCore.Hosting.Abstractions ~> 2.0.0
-    Microsoft.AspNetCore.Authentication.Abstractions ~> 2.0.0
-    Microsoft.Extensions.Configuration.Abstractions ~> 2.0.0
+    Microsoft.AspNetCore.Http.Abstractions >= LOCKEDVERSION
+    Microsoft.AspNetCore.Hosting.Abstractions >= LOCKEDVERSION
+    Microsoft.AspNetCore.Authentication.Abstractions >= LOCKEDVERSION
+    Microsoft.Extensions.Configuration.Abstractions >= LOCKEDVERSION

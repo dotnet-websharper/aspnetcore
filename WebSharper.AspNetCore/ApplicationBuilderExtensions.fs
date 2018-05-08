@@ -25,7 +25,7 @@ type ApplicationBuilderExtensions =
             [<Optional>] config: IConfiguration,
             [<Optional>] binDir: string
         ) =
-        this.UseWebSharperRemoting(WebSharperOptions.Create(env, unbox null, config, binDir))
+        this.UseWebSharperRemoting(WebSharperOptions.Create(env, None, Option.ofObj config, None))
 
     // Sitelets
 

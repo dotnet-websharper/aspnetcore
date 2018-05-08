@@ -85,19 +85,29 @@ type WebSharperOptions
             [<Optional>] config: IConfiguration,
             [<Optional>] binDir: string
         ) =
-        let binDir =
-            match binDir with
-            | null -> autoBinDir()
-            | d -> d
         let siteletOpt =
             if obj.ReferenceEquals(sitelet, null)
             then None
             else Some (Sitelet.Box sitelet)
+        WebSharperOptions.Create(env, siteletOpt, Option.ofObj config, Option.ofObj binDir)
+
+    static member internal Create
+        (
+            env: IHostingEnvironment,
+            sitelet: option<Sitelet<obj>>,
+            config: option<IConfiguration>,
+            binDir: option<string>
+        ) =
+        let binDir =
+            match binDir with
+            | None -> autoBinDir()
+            | Some d -> d
         // Note: must load assemblies and set Context.* before calling Shared.*
         let assemblies =
             discoverAssemblies binDir
             |> loadReferencedAssemblies
         Context.IsDebug <- env.IsDevelopment
-        if not (isNull config) then
+        config |> Option.iter (fun config ->
             Context.GetSetting <- fun key -> Option.ofObj config.[key]
-        WebSharperOptions(env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, siteletOpt)
+        )
+        WebSharperOptions(env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet)

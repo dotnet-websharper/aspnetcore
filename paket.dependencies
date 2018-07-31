@@ -13,6 +13,7 @@ nuget Microsoft.AspNetCore.Authentication.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Http.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Hosting.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.All !~> 2.0.0
+nuget Newtonsoft.Json >= 11.0
 
 group build
     framework: net45

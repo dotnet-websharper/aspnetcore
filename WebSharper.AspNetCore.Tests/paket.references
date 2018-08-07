@@ -1,4 +1,10 @@
-Microsoft.AspNetCore.All
 FSharp.Core
 WebSharper.FSharp
 WebSharper.UI
+Microsoft.Extensions.Configuration
+Microsoft.AspNetCore.Authentication.Cookies
+Microsoft.AspNetCore.Diagnostics
+Microsoft.Extensions.Configuration.FileExtensions
+Microsoft.AspNetCore.StaticFiles
+Microsoft.Extensions.Configuration.Json
+Microsoft.AspNetCore

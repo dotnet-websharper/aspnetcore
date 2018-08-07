@@ -8,12 +8,22 @@ nuget FSharp.Core ~> 4.2.0
 nuget WebSharper prerelease
 nuget WebSharper.FSharp prerelease
 nuget WebSharper.UI prerelease
+
+// Library:
 nuget Microsoft.Extensions.Configuration.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Authentication.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Http.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Hosting.Abstractions !~> 2.0.0
-nuget Microsoft.AspNetCore.All !~> 2.0.0
 nuget Newtonsoft.Json >= 11.0
+
+// Tests:
+nuget Microsoft.Extensions.Configuration !~> 2.0.0
+nuget Microsoft.AspNetCore.Authentication.Cookies !~> 2.0.0
+nuget Microsoft.AspNetCore.Diagnostics !~> 2.0.0
+nuget Microsoft.Extensions.Configuration.FileExtensions !~> 2.0.0
+nuget Microsoft.AspNetCore.StaticFiles !~> 2.0.0
+nuget Microsoft.Extensions.Configuration.Json !~> 2.0.0
+nuget Microsoft.AspNetCore !~> 2.0.0
 
 group build
     framework: net45

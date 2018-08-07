@@ -92,7 +92,7 @@ NUGET
       System.Diagnostics.DiagnosticSource (>= 4.4.1) - restriction: >= netstandard2.0
       System.Reflection.Metadata (>= 1.5) - restriction: >= netstandard2.0
     Microsoft.AspNetCore.Diagnostics.Abstractions (2.0.3) - restriction: >= netstandard2.0
-    Microsoft.AspNetCore.Hosting (2.0.3)
+    Microsoft.AspNetCore.Hosting (2.0.3) - restriction: >= netstandard2.0
       Microsoft.AspNetCore.Hosting.Abstractions (>= 2.0.3) - restriction: >= netstandard2.0
       Microsoft.AspNetCore.Hosting.Server.Abstractions (>= 2.0.3) - restriction: >= netstandard2.0
       Microsoft.AspNetCore.Http (>= 2.0.3) - restriction: >= netstandard2.0
@@ -320,7 +320,7 @@ NUGET
       System.Threading.Timer (>= 4.3) - restriction: || (&& (< net45) (>= netstandard1.2) (< netstandard1.3) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.3) (< netstandard1.4) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.4) (< netstandard1.5) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.5) (< netstandard1.6)) (&& (< net45) (>= netstandard1.6) (< netstandard2.0)) (&& (>= uap10.0) (< uap10.1))
       System.Xml.ReaderWriter (>= 4.3) - restriction: || (&& (< net45) (>= netstandard1.1) (< netstandard1.2) (< win8)) (&& (< net45) (>= netstandard1.2) (< netstandard1.3) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.3) (< netstandard1.4) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.4) (< netstandard1.5) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.5) (< netstandard1.6)) (&& (< net45) (>= netstandard1.6) (< netstandard2.0)) (&& (>= net46) (< netstandard1.4)) (&& (>= netstandard1.0) (< portable-net45+win8+wpa81) (< wp8)) (&& (>= uap10.0) (< uap10.1))
       System.Xml.XDocument (>= 4.3) - restriction: || (&& (< net45) (>= netstandard1.1) (< netstandard1.2) (< win8)) (&& (< net45) (>= netstandard1.2) (< netstandard1.3) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.3) (< netstandard1.4) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.4) (< netstandard1.5) (< win8) (< wpa81)) (&& (< net45) (>= netstandard1.5) (< netstandard1.6)) (&& (< net45) (>= netstandard1.6) (< netstandard2.0)) (&& (>= netstandard1.0) (< portable-net45+win8+wpa81) (< wp8)) (&& (>= uap10.0) (< uap10.1))
-    Newtonsoft.Json (11.0.2)
+    Newtonsoft.Json (11.0.1)
       Microsoft.CSharp (>= 4.3) - restriction: || (&& (< net20) (>= netstandard1.0) (< netstandard1.3)) (&& (< net20) (>= netstandard1.3) (< netstandard2.0))
       NETStandard.Library (>= 1.6.1) - restriction: || (&& (< net20) (>= netstandard1.0) (< netstandard1.3)) (&& (< net20) (>= netstandard1.3) (< netstandard2.0))
       System.ComponentModel.TypeConverter (>= 4.3) - restriction: || (&& (< net20) (>= netstandard1.0) (< netstandard1.3)) (&& (< net20) (>= netstandard1.3) (< netstandard2.0))
@@ -943,13 +943,13 @@ NUGET
       System.Xml.XmlDocument (>= 4.3) - restriction: || (&& (< monoandroid) (< monotouch) (>= netstandard1.3) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (>= net46)
       System.Xml.XPath (>= 4.3) - restriction: || (&& (< monoandroid) (< monotouch) (>= netstandard1.3) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (>= net46)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.4.1.289)
-    WebSharper.FSharp (4.4.1.289)
-      WebSharper (4.4.1.289)
-    WebSharper.UI (4.4.2.138)
+    WebSharper (4.5.0.290)
+    WebSharper.FSharp (4.5.0.290)
+      WebSharper (4.5.0.290)
+    WebSharper.UI (4.5.0.139)
       HtmlAgilityPack (>= 1.7.1)
       System.Xml.XDocument (>= 4.3)
-      WebSharper (>= 4.4.1 < 4.5)
+      WebSharper (>= 4.5 < 4.6)
 
 GROUP build
 RESTRICTION: == net45

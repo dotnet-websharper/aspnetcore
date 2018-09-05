@@ -14,6 +14,11 @@ module Program =
     let BuildWebHost args =
         WebHost
             .CreateDefaultBuilder(args)
+            .ConfigureLogging(fun logging ->
+                logging
+                    .AddConsole()
+                    .AddDebug()
+                |> ignore)
             .UseStartup<Startup>()
             .Build()
 

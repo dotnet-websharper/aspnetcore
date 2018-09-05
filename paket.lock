@@ -221,11 +221,11 @@ NUGET
       Microsoft.Extensions.FileSystemGlobbing (>= 2.0.1) - restriction: >= netstandard2.0
     Microsoft.Extensions.FileSystemGlobbing (2.0.1) - restriction: >= netstandard2.0
     Microsoft.Extensions.Hosting.Abstractions (2.0.3) - restriction: >= netstandard2.0
-    Microsoft.Extensions.Logging (2.0.2) - restriction: >= netstandard2.0
+    Microsoft.Extensions.Logging (2.0.2)
       Microsoft.Extensions.DependencyInjection.Abstractions (>= 2.0) - restriction: >= netstandard2.0
       Microsoft.Extensions.Logging.Abstractions (>= 2.0.2) - restriction: >= netstandard2.0
       Microsoft.Extensions.Options (>= 2.0.2) - restriction: >= netstandard2.0
-    Microsoft.Extensions.Logging.Abstractions (2.0.2) - restriction: >= netstandard2.0
+    Microsoft.Extensions.Logging.Abstractions (2.0.2)
     Microsoft.Extensions.Logging.Configuration (2.0.2) - restriction: >= netstandard2.0
       Microsoft.Extensions.Logging (>= 2.0.2) - restriction: >= netstandard2.0
       Microsoft.Extensions.Options.ConfigurationExtensions (>= 2.0.2) - restriction: >= netstandard2.0
@@ -942,14 +942,14 @@ NUGET
       System.Xml.ReaderWriter (>= 4.3) - restriction: && (< monoandroid) (< monotouch) (< net46) (>= netstandard1.3) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)
       System.Xml.XmlDocument (>= 4.3) - restriction: || (&& (< monoandroid) (< monotouch) (>= netstandard1.3) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (>= net46)
       System.Xml.XPath (>= 4.3) - restriction: || (&& (< monoandroid) (< monotouch) (>= netstandard1.3) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (>= net46)
-  remote: https://daily.websharper.com/nuget
-    WebSharper (4.5.1.304)
-    WebSharper.FSharp (4.5.1.304)
-      WebSharper (4.5.1.304)
     WebSharper.UI (4.5.1.141)
       HtmlAgilityPack (>= 1.7.1)
       System.Xml.XDocument (>= 4.3)
       WebSharper (>= 4.5.1 < 4.6)
+  remote: https://daily.websharper.com/nuget
+    WebSharper (4.5.1.304)
+    WebSharper.FSharp (4.5.1.304)
+      WebSharper (4.5.1.304)
 
 GROUP build
 RESTRICTION: == net45

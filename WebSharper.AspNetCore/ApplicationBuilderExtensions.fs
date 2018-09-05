@@ -6,6 +6,7 @@ open System.Runtime.InteropServices
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Configuration
+open Microsoft.Extensions.Logging
 open WebSharper.Sitelets
 
 [<Extension>]
@@ -23,9 +24,10 @@ type ApplicationBuilderExtensions =
             this: IApplicationBuilder,
             env: IHostingEnvironment,
             [<Optional>] config: IConfiguration,
+            [<Optional>] logger: ILogger,
             [<Optional>] binDir: string
         ) =
-        this.UseWebSharperRemoting(WebSharperOptions.Create(env, None, Option.ofObj config, None))
+        this.UseWebSharperRemoting(WebSharperOptions.Create(env, None, Option.ofObj config, Option.ofObj logger, Option.ofObj binDir))
 
     // Sitelets
 
@@ -40,9 +42,10 @@ type ApplicationBuilderExtensions =
             env: IHostingEnvironment,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
+            [<Optional>] logger: ILogger,
             [<Optional>] binDir: string
         ) =
-        this.UseWebSharperSitelets(WebSharperOptions.Create(env, sitelet, config, binDir))
+        this.UseWebSharperSitelets(WebSharperOptions.Create(env, sitelet, config, logger, binDir))
 
     // All
 
@@ -58,9 +61,10 @@ type ApplicationBuilderExtensions =
             env: IHostingEnvironment,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
+            [<Optional>] logger: ILogger,
             [<Optional>] binDir: string
         ) =
-        this.UseWebSharper(WebSharperOptions.Create(env, sitelet, config, binDir))
+        this.UseWebSharper(WebSharperOptions.Create(env, sitelet, config, logger, binDir))
 
     [<Extension>]
     static member UseWebSharper

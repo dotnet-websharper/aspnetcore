@@ -11,6 +11,7 @@ nuget WebSharper.UI prerelease
 
 // Library:
 nuget Microsoft.Extensions.Configuration.Abstractions !~> 2.0.0
+nuget Microsoft.Extensions.Logging.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Authentication.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Http.Abstractions !~> 2.0.0
 nuget Microsoft.AspNetCore.Hosting.Abstractions !~> 2.0.0
@@ -18,6 +19,7 @@ nuget Newtonsoft.Json >= 11.0
 
 // Tests:
 nuget Microsoft.Extensions.Configuration !~> 2.0.0
+nuget Microsoft.Extensions.Logging !~> 2.0.0
 nuget Microsoft.AspNetCore.Authentication.Cookies !~> 2.0.0
 nuget Microsoft.AspNetCore.Diagnostics !~> 2.0.0
 nuget Microsoft.Extensions.Configuration.FileExtensions !~> 2.0.0

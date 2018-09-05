@@ -5,10 +5,11 @@ open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Configuration
+open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open WebSharper.AspNetCore
 
-type Startup(config: IConfiguration) =
+type Startup(loggerFactory: ILoggerFactory, config: IConfiguration) =
 
     member this.ConfigureServices(services: IServiceCollection) =
         services.AddAuthentication("WebSharper")
@@ -22,6 +23,7 @@ type Startup(config: IConfiguration) =
             .UseWebSharper(env, fun builder ->
                 builder.Sitelet(Website.Main)
                        .Config(config.GetSection("websharper"))
+                       .Logger(loggerFactory)
                 |> ignore)
             .UseStaticFiles()
             .Run(fun context ->

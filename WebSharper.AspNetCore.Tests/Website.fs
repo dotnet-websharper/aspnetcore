@@ -1,6 +1,8 @@
 module WebSharper.AspNetCore.Tests.Website
 
+open Microsoft.Extensions.Logging
 open WebSharper
+open WebSharper.AspNetCore
 open WebSharper.JavaScript
 open WebSharper.Sitelets
 open WebSharper.UI
@@ -80,7 +82,7 @@ module Client =
 open WebSharper.UI.Server
 
 let Main =
-    Application.MultiPage(fun (ctx: Context<_>) ep ->
+    Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
         let readBody() =
             let i = ctx.Request.Body 
             if not (isNull i) then 
@@ -97,6 +99,7 @@ let Main =
                 use reader = new System.IO.StreamReader(m)
                 reader.ReadToEnd()
             else "Request body not found"
+        ctx.Logger().LogInformation("Serving {0}", ep)
         match ep with
         | Home ->
             let aboutPageLink = ctx.Link About

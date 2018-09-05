@@ -1,4 +1,3 @@
-/// The keys that WebSharper sets in the HttpContext.
 namespace WebSharper.AspNetCore
 
 open System.Runtime.CompilerServices

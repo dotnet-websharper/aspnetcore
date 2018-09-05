@@ -10,6 +10,7 @@
     <Compile Include="Context.fs" />
     <Compile Include="Remoting.fs" />
     <Compile Include="Sitelets.fs" />
+    <Compile Include="WebContextExtensions.fs" />
     <Compile Include="ApplicationBuilderExtensions.fs" />
   </ItemGroup>
   <Import Project="..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets" Condition="Exists('..\paket-files\wsbuild\github.com\dotnet-websharper\build-script\WebSharper.Fake.targets')" />

@@ -81,6 +81,10 @@ type WebSharperOptions
 
     member this.Sitelet = sitelet
 
+    member this.Configuration = config
+
+    member this.Logger = logger
+
     static member Create
         (
             env: IHostingEnvironment,

@@ -8,7 +8,7 @@ open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open WebSharper.AspNetCore
 
-type Startup() =
+type Startup(config: IConfiguration) =
 
     member this.ConfigureServices(services: IServiceCollection) =
         services.AddAuthentication("WebSharper")
@@ -18,14 +18,11 @@ type Startup() =
     member this.Configure(app: IApplicationBuilder, env: IHostingEnvironment) =
         if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
 
-        let config =
-            ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json")
-                .Build()
-
         app.UseAuthentication()
-            .UseWebSharper(env, Website.Main, config.GetSection("websharper"))
+            .UseWebSharper(env, fun builder ->
+                builder.Sitelet(Website.Main)
+                       .Config(config.GetSection("websharper"))
+                |> ignore)
             .UseStaticFiles()
             .Run(fun context ->
                 context.Response.StatusCode <- 404

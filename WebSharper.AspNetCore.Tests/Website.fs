@@ -53,7 +53,7 @@ module Client =
                         .Task(task.Name)
                         .Clear(fun _ -> Tasks.RemoveByKey task.Name)
                         .Done(task.Done)
-                        .ShowDone(Attr.DynamicClass "checked" task.Done.View id)
+                        .ShowDone(Attr.DynamicClassPred "checked" task.Done.View)
                         .Doc()
                 ))
             .NewTaskName(NewTaskName)

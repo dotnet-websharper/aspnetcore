@@ -111,3 +111,30 @@ type WebSharperOptions
             Context.GetSetting <- fun key -> Option.ofObj config.[key]
         )
         WebSharperOptions(env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet)
+
+type WebSharperBuilder(env: IHostingEnvironment) =
+    let mutable _sitelet = None
+    let mutable _config = None
+    let mutable _binDir = None
+    let mutable _authScheme = None
+
+    member this.Sitelet<'T when 'T : equality>(sitelet: Sitelet<'T>) =
+        _sitelet <- Some (Sitelet.Box sitelet)
+        this
+
+    member this.Config(config: IConfiguration) =
+        _config <- Some config
+        this
+
+    member this.BinDir(binDir: string) =
+        _binDir <- Some binDir
+        this
+
+    member this.AuthenticationScheme(scheme: string) =
+        _authScheme <- Some scheme
+        this
+
+    member this.Build() =
+        let o = WebSharperOptions.Create(env, _sitelet, _config, _binDir)
+        _authScheme |> Option.iter (fun s -> o.AuthenticationScheme <- s)
+        o

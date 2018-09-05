@@ -61,3 +61,14 @@ type ApplicationBuilderExtensions =
             [<Optional>] binDir: string
         ) =
         this.UseWebSharper(WebSharperOptions.Create(env, sitelet, config, binDir))
+
+    [<Extension>]
+    static member UseWebSharper
+        (
+            this: IApplicationBuilder,
+            env: IHostingEnvironment,
+            build: System.Action<WebSharperBuilder>
+        ) =
+        let builder = WebSharperBuilder(env)
+        build.Invoke(builder)
+        this.UseWebSharper(builder.Build())

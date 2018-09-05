@@ -21,10 +21,7 @@ type Startup(loggerFactory: ILoggerFactory, config: IConfiguration) =
         if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
 
         app.UseAuthentication()
-            .UseWebSharper(fun builder ->
-                builder.Config(config.GetSection("websharper"))
-                       .Logger(loggerFactory)
-                |> ignore)
+            .UseWebSharper()
             .UseStaticFiles()
             .Run(fun context ->
                 context.Response.StatusCode <- 404

@@ -81,8 +81,8 @@ type ApplicationBuilderExtensions =
     static member UseWebSharper
         (
             this: IApplicationBuilder,
-            build: Action<WebSharperBuilder>
+            [<Optional>] build: Action<WebSharperBuilder>
         ) =
         let builder = WebSharperBuilder(this.ApplicationServices)
-        build.Invoke(builder)
+        if not (isNull build) then build.Invoke(builder)
         this.UseWebSharper(builder.Build())

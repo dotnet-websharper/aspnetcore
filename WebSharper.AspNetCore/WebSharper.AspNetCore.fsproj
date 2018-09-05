@@ -5,6 +5,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Services.fs" />
     <Compile Include="WebSharperOptions.fs" />
     <Compile Include="EnvKey.fs" />
     <Compile Include="Context.fs" />

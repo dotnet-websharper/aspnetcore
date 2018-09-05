@@ -81,8 +81,12 @@ module Client =
 
 open WebSharper.UI.Server
 
-let Main =
-    Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
+type MyWebsite(loggerFactory: ILoggerFactory) =
+    inherit ISiteletService<EndPoint>()
+
+    let logger = loggerFactory.CreateLogger<MyWebsite>()
+    
+    override this.Sitelet = Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
         let readBody() =
             let i = ctx.Request.Body 
             if not (isNull i) then 
@@ -99,7 +103,7 @@ let Main =
                 use reader = new System.IO.StreamReader(m)
                 reader.ReadToEnd()
             else "Request body not found"
-        ctx.Logger().LogInformation("Serving {0}", ep)
+        logger.LogInformation("Serving {0}", ep)
         match ep with
         | Home ->
             let aboutPageLink = ctx.Link About

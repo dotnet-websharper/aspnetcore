@@ -159,11 +159,10 @@ type private UserSession(httpCtx: HttpContext, options: WebSharperOptions) =
         member this.IsAvailable = true
 
 let private makeEnv (httpCtx: HttpContext) (options: WebSharperOptions) =
-    let d = Dictionary()
-    d.["WebSharper.AspNetCore.HttpContext"] <- box httpCtx
-    options.Configuration |> Option.iter (fun c -> d.["WebSharper.AspNetCore.Configuration"] <- c)
-    options.Logger |> Option.iter (fun l -> d.["WebSharper.AspNetCore.Logger"] <- l)
-    d
+    dict [|
+        "WebSharper.AspNetCore.HttpContext", box httpCtx
+        "WebSharper.AspNetCore.Services", box options.Services
+    |]
 
 let Make (httpCtx: HttpContext) (options: WebSharperOptions) =
     let appPath = httpCtx.Request.PathBase.ToUriComponent() 
@@ -201,7 +200,7 @@ let MakeSimple (httpCtx: HttpContext) (options: WebSharperOptions) =
     { new WebSharper.Web.Context() with
         member this.ApplicationPath = appPath
         // TODO use httpCtx.Items? but it's <obj, obj>, not <string, obj>
-        member this.Environment = makeEnv httpCtx options :> _
+        member this.Environment = makeEnv httpCtx options
         member this.Json = options.Json
         member this.Metadata = options.Metadata
         member this.Dependencies = options.Dependencies

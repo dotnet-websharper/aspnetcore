@@ -9,6 +9,7 @@ open System.Runtime.InteropServices
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.Logging
+open Microsoft.Extensions.DependencyInjection
 open WebSharper.Sitelets
 module Res = WebSharper.Core.Resources
 module Shared = WebSharper.Web.Shared
@@ -17,13 +18,14 @@ module Shared = WebSharper.Web.Shared
 type WebSharperOptions
     internal 
     (
+        services: IServiceProvider,
         contentRoot: string,
         webRoot: string,
         isDebug: bool,
         assemblies: Assembly[],
         sitelet: option<Sitelet<obj>>,
-        config: option<IConfiguration>,
-        logger: option<ILogger>
+        useSitelets: bool,
+        useRemoting: bool
     ) =
 
     static let tryLoad(name: AssemblyName) =
@@ -47,14 +49,15 @@ type WebSharperOptions
             try Some (loadFileInfo(p))
             with e -> None)
 
-    static let loadReferencedAssemblies (log: string -> unit) (alreadyLoaded: Assembly[]) =
+    static let loadReferencedAssemblies (logger: ILogger) (alreadyLoaded: Assembly[]) =
         let loaded = Dictionary()
         let rec load (asm: Assembly) =
             for asmName in asm.GetReferencedAssemblies() do
                 let name = asmName.Name
                 if not (loaded.ContainsKey name) then
                     try loaded.[name] <- Assembly.Load(asmName)
-                    with _ -> log (sprintf "Failed to load %s referenced by %s" name (asm.GetName().Name))
+                    with _ ->
+                        logger.LogWarning("Failed to load {0} referenced by {1}", name, asm.GetName().Name)
         for asm in alreadyLoaded do
             loaded.[asm.GetName().Name] <- asm
         Array.ofSeq loaded.Values
@@ -65,9 +68,11 @@ type WebSharperOptions
       
     member val AuthenticationScheme = "WebSharper" with get, set
 
-    member val UseSitelets = true with get, set
+    member this.Services = services
 
-    member val UseRemoting = true with get, set
+    member this.UseSitelets = useSitelets
+
+    member this.UseRemoting = useRemoting
 
     member this.Metadata = Shared.Metadata
 
@@ -85,51 +90,62 @@ type WebSharperOptions
 
     member this.Sitelet = sitelet
 
-    member this.Configuration = config
-
-    member this.Logger = logger
-
     static member Create
         (
-            env: IHostingEnvironment,
+            services: IServiceProvider,
             [<Optional>] sitelet: Sitelet<'T>,
             [<Optional>] config: IConfiguration,
             [<Optional>] logger: ILogger,
-            [<Optional>] binDir: string
+            [<Optional>] binDir: string,
+            [<Optional; DefaultParameterValue true>] useSitelets: bool,
+            [<Optional; DefaultParameterValue true>] useRemoting: bool
         ) =
         let siteletOpt =
             if obj.ReferenceEquals(sitelet, null)
             then None
             else Some (Sitelet.Box sitelet)
-        WebSharperOptions.Create(env, siteletOpt, Option.ofObj config, Option.ofObj logger, Option.ofObj binDir)
+        WebSharperOptions.Create(services, siteletOpt, Option.ofObj config, Option.ofObj logger, Option.ofObj binDir, useSitelets, useRemoting)
 
     static member internal Create
         (
-            env: IHostingEnvironment,
+            services: IServiceProvider,
             sitelet: option<Sitelet<obj>>,
             config: option<IConfiguration>,
             logger: option<ILogger>,
-            binDir: option<string>
+            binDir: option<string>,
+            useSitelets: bool,
+            useRemoting: bool
         ) =
         let binDir =
             match binDir with
             | None -> autoBinDir()
             | Some d -> d
-        let log =
+        let logger =
             match logger with
-            | None -> eprintfn "%s"
-            | Some l -> l.LogWarning
+            | Some l -> l
+            | None -> services.GetRequiredService<ILoggerFactory>().CreateLogger<WebSharperOptions>() :> _
         // Note: must load assemblies and set Context.* before calling Shared.*
         let assemblies =
             discoverAssemblies binDir
-            |> loadReferencedAssemblies log
+            |> loadReferencedAssemblies logger
+        let env = services.GetRequiredService<IHostingEnvironment>()
         Context.IsDebug <- env.IsDevelopment
-        config |> Option.iter (fun config ->
-            Context.GetSetting <- fun key -> Option.ofObj config.[key]
-        )
-        WebSharperOptions(env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet, config, logger)
+        let config =
+            match config with
+            | Some c -> c
+            | None -> services.GetRequiredService<IConfiguration>().GetSection("websharper") :> _
+        Context.GetSetting <- fun key -> Option.ofObj config.[key]
+        let sitelet =
+            if useSitelets then
+                sitelet |> Option.orElseWith (fun () ->
+                    match services.GetRequiredService<ISiteletService>() with
+                    | null -> None
+                    | service -> Some service.Sitelet
+                )
+            else None
+        WebSharperOptions(services, env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet, useSitelets, useRemoting)
 
-type WebSharperBuilder(env: IHostingEnvironment) =
+type WebSharperBuilder(services: IServiceProvider) =
     let mutable _sitelet = None
     let mutable _config = None
     let mutable _logger = None
@@ -171,8 +187,6 @@ type WebSharperBuilder(env: IHostingEnvironment) =
         this
 
     member this.Build() =
-        let o = WebSharperOptions.Create(env, _sitelet, _config, _logger, _binDir)
+        let o = WebSharperOptions.Create(services, _sitelet, _config, _logger, _binDir, _useSitelets, _useRemoting)
         _authScheme |> Option.iter (fun s -> o.AuthenticationScheme <- s)
-        o.UseSitelets <- _useSitelets
-        o.UseRemoting <- _useRemoting
         o

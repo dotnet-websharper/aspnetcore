@@ -12,17 +12,17 @@ open WebSharper.AspNetCore
 type Startup(loggerFactory: ILoggerFactory, config: IConfiguration) =
 
     member this.ConfigureServices(services: IServiceCollection) =
-        services.AddAuthentication("WebSharper")
-            .AddCookie("WebSharper", fun options -> ())
+        services.AddSitelet<Website.MyWebsite>()
+                .AddAuthentication("WebSharper")
+                .AddCookie("WebSharper", fun options -> ())
         |> ignore
 
     member this.Configure(app: IApplicationBuilder, env: IHostingEnvironment) =
         if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
 
         app.UseAuthentication()
-            .UseWebSharper(env, fun builder ->
-                builder.Sitelet(Website.Main)
-                       .Config(config.GetSection("websharper"))
+            .UseWebSharper(fun builder ->
+                builder.Config(config.GetSection("websharper"))
                        .Logger(loggerFactory)
                 |> ignore)
             .UseStaticFiles()

@@ -5,3 +5,4 @@ Microsoft.AspNetCore.Hosting.Abstractions
 Microsoft.AspNetCore.Authentication.Abstractions
 Microsoft.Extensions.Configuration.Abstractions
 Microsoft.Extensions.Logging.Abstractions
+Microsoft.Extensions.DependencyInjection.Abstractions

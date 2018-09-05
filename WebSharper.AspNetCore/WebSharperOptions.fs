@@ -65,6 +65,10 @@ type WebSharperOptions
       
     member val AuthenticationScheme = "WebSharper" with get, set
 
+    member val UseSitelets = true with get, set
+
+    member val UseRemoting = true with get, set
+
     member this.Metadata = Shared.Metadata
 
     member this.Dependencies = Shared.Dependencies
@@ -131,6 +135,8 @@ type WebSharperBuilder(env: IHostingEnvironment) =
     let mutable _logger = None
     let mutable _binDir = None
     let mutable _authScheme = None
+    let mutable _useSitelets = true
+    let mutable _useRemoting = true
 
     member this.Sitelet<'T when 'T : equality>(sitelet: Sitelet<'T>) =
         _sitelet <- Some (Sitelet.Box sitelet)
@@ -156,7 +162,17 @@ type WebSharperBuilder(env: IHostingEnvironment) =
         _authScheme <- Some scheme
         this
 
+    member this.UseSitelets([<Optional; DefaultParameterValue true>] useSitelets: bool) =
+        _useSitelets <- useSitelets
+        this
+
+    member this.UseRemoting([<Optional; DefaultParameterValue true>] useRemoting: bool) =
+        _useRemoting <- useRemoting
+        this
+
     member this.Build() =
         let o = WebSharperOptions.Create(env, _sitelet, _config, _logger, _binDir)
         _authScheme |> Option.iter (fun s -> o.AuthenticationScheme <- s)
+        o.UseSitelets <- _useSitelets
+        o.UseRemoting <- _useRemoting
         o

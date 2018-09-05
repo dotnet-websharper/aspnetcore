@@ -50,8 +50,9 @@ type ApplicationBuilderExtensions =
 
     [<Extension>]
     static member UseWebSharper(this: IApplicationBuilder, options: WebSharperOptions) =
-        this.UseWebSharperRemoting(options)
-            .UseWebSharperSitelets(options)
+        if options.UseRemoting then this.UseWebSharperRemoting(options) |> ignore
+        if options.UseSitelets then this.UseWebSharperSitelets(options) |> ignore
+        this
 
     [<Extension>]
     static member UseWebSharper

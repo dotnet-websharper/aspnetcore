@@ -23,6 +23,15 @@ type DefaultSiteletService<'T when 'T : equality>(sitelet: Sitelet<'T>) =
 
     override this.Sitelet = sitelet
 
+/// Define a remoting provider to serve by WebSharper.
+type IRemotingService =
+    abstract Register : unit -> unit
+
+type RemotingService<'TProvider, 'TInstance>(provider: 'TInstance) =
+    interface IRemotingService with
+        member this.Register() =
+            WebSharper.Core.Remoting.AddHandler typeof<'TProvider> provider
+
 [<Extension>]
 type ServiceExtensions =
 
@@ -38,5 +47,28 @@ type ServiceExtensions =
     [<Extension>]
     static member AddSitelet<'T when 'T : equality>
             (this: IServiceCollection, sitelet: Sitelet<'T>) =
-        ServiceDescriptor(typeof<ISiteletService>, DefaultSiteletService(sitelet))
-        |> this.Add
+        this.AddSingleton<ISiteletService>(DefaultSiteletService sitelet)
+
+    /// Add a remoting provider to be loaded on startup with UseWebSharper.
+    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<TProvider>.
+    [<Extension>]
+    static member AddWebSharperRemoting<'TProvider when 'TProvider : not struct>
+            (this: IServiceCollection) =
+        this.AddSingleton<'TProvider, 'TProvider>()
+            .AddSingleton<IRemotingService, RemotingService<'TProvider, 'TProvider>>()
+
+    /// Add a remoting provider to be loaded on startup with UseWebSharper.
+    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<TProvider>.
+    [<Extension>]
+    static member AddWebSharperRemoting<'TProvider, 'TInstance when 'TInstance : not struct>
+            (this: IServiceCollection) =
+        this.AddSingleton(ServiceDescriptor(typeof<'TProvider>, typeof<'TInstance>))
+            .AddSingleton<IRemotingService, RemotingService<'TProvider, 'TInstance>>()
+
+    /// Add a remoting provider to be loaded on startup with UseWebSharper.
+    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<TProvider>.
+    [<Extension>]
+    static member AddWebSharperRemoting<'TProvider when 'TProvider : not struct>
+            (this: IServiceCollection, provider: 'TProvider) =
+        this.AddSingleton<'TProvider>(provider)
+            .AddSingleton<IRemotingService>(RemotingService provider)

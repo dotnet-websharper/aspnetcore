@@ -11,18 +11,21 @@ open WebSharper.UI.Templating
 
 type IndexTemplate = Template<"Main.html", clientLoad = ClientLoad.FromDocument>
 
-module Rpc =
+type UserSession(logger: ILogger<UserSession>) =
 
     [<Rpc>]
-    let GetLogin() =
+    member this.GetLogin() =
+        logger.LogInformation("Getting user login")
         WebSharper.Web.Remoting.GetContext().UserSession.GetLoggedInUser()
 
     [<Rpc>]
-    let Login(name) =
+    member this.Login(name: string) =
+        logger.LogInformation("User logging in as {0}", name)
         WebSharper.Web.Remoting.GetContext().UserSession.LoginUser(name)
 
     [<Rpc>]
-    let Logout() =
+    member this.Logout() =
+        logger.LogInformation("User logging out")
         WebSharper.Web.Remoting.GetContext().UserSession.Logout()
 
 type EndPoint =
@@ -64,10 +67,10 @@ module Client =
                 Var.Set NewTaskName "")
             .ClearCompleted(fun _ -> Tasks.RemoveBy (fun task -> task.Done.Value))
             .Login(Login)
-            .DoLogin(fun _ -> Rpc.Login Login.Value |> Async.Start)
+            .DoLogin(fun _ -> Remote<UserSession>.Login Login.Value |> Async.Start)
             .GetLogin(fun _ ->
                 async {
-                    let! u = Rpc.GetLogin()
+                    let! u = Remote<UserSession>.GetLogin()
                     match u with
                     | None -> "Not logged in."
                     | Some u -> "Logged in as: " + u
@@ -75,17 +78,15 @@ module Client =
                 }
                 |> Async.Start
             )
-            .Logout(fun _ -> Rpc.Logout() |> Async.Start)
+            .Logout(fun _ -> Remote<UserSession>.Logout() |> Async.Start)
             .AboutPageLink(aboutPageLink)
             .Doc()
 
 open WebSharper.UI.Server
 
-type MyWebsite(loggerFactory: ILoggerFactory) =
+type MyWebsite(logger: ILogger<MyWebsite>) =
     inherit ISiteletService<EndPoint>()
 
-    let logger = loggerFactory.CreateLogger<MyWebsite>()
-    
     override this.Sitelet = Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
         let readBody() =
             let i = ctx.Request.Body 

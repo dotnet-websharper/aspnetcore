@@ -13,6 +13,7 @@ type Startup(loggerFactory: ILoggerFactory, config: IConfiguration) =
 
     member this.ConfigureServices(services: IServiceCollection) =
         services.AddSitelet<Website.MyWebsite>()
+                .AddWebSharperRemoting<Website.UserSession>()
                 .AddAuthentication("WebSharper")
                 .AddCookie("WebSharper", fun options -> ())
         |> ignore

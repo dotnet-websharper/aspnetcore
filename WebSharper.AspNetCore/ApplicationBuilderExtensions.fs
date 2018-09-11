@@ -20,6 +20,8 @@ type ApplicationBuilderExtensions =
     [<Extension>]
     [<Obsolete "Use UseWebSharper(Action<WebSharperBuilder>)">]
     static member UseWebSharperRemoting(this: IApplicationBuilder, options: WebSharperOptions) =
+        for s in this.ApplicationServices.GetServices<IRemotingService>() do
+            s.Register()
         this.Use(Remoting.Middleware options)
 
     [<Extension>]

@@ -23,14 +23,14 @@ type DefaultSiteletService<'T when 'T : equality>(sitelet: Sitelet<'T>) =
 
     override this.Sitelet = sitelet
 
-/// Define a remoting provider to serve by WebSharper.
+/// Define a remoting handler to serve by WebSharper.
 type IRemotingService =
     abstract Register : unit -> unit
 
-type RemotingService<'TProvider, 'TInstance>(provider: 'TInstance) =
+type RemotingService<'THandler, 'TInstance>(handler: 'TInstance) =
     interface IRemotingService with
         member this.Register() =
-            WebSharper.Core.Remoting.AddHandler typeof<'TProvider> provider
+            WebSharper.Core.Remoting.AddHandler typeof<'THandler> handler
 
 [<Extension>]
 type ServiceExtensions =
@@ -49,26 +49,26 @@ type ServiceExtensions =
             (this: IServiceCollection, sitelet: Sitelet<'T>) =
         this.AddSingleton<ISiteletService>(DefaultSiteletService sitelet)
 
-    /// Add a remoting provider to be loaded on startup with UseWebSharper.
-    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<TProvider>.
+    /// Add a remoting handler to be loaded on startup with UseWebSharper.
+    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<THandler>.
     [<Extension>]
-    static member AddWebSharperRemoting<'TProvider when 'TProvider : not struct>
+    static member AddWebSharperRemoting<'THandler when 'THandler : not struct>
             (this: IServiceCollection) =
-        this.AddSingleton<'TProvider, 'TProvider>()
-            .AddSingleton<IRemotingService, RemotingService<'TProvider, 'TProvider>>()
+        this.AddSingleton<'THandler, 'THandler>()
+            .AddSingleton<IRemotingService, RemotingService<'THandler, 'THandler>>()
 
-    /// Add a remoting provider to be loaded on startup with UseWebSharper.
-    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<TProvider>.
+    /// Add a remoting handler to be loaded on startup with UseWebSharper.
+    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<THandler>.
     [<Extension>]
-    static member AddWebSharperRemoting<'TProvider, 'TInstance when 'TInstance : not struct>
+    static member AddWebSharperRemoting<'THandler, 'TInstance when 'TInstance : not struct>
             (this: IServiceCollection) =
-        this.AddSingleton(ServiceDescriptor(typeof<'TProvider>, typeof<'TInstance>))
-            .AddSingleton<IRemotingService, RemotingService<'TProvider, 'TInstance>>()
+        this.AddSingleton(ServiceDescriptor(typeof<'THandler>, typeof<'TInstance>))
+            .AddSingleton<IRemotingService, RemotingService<'THandler, 'TInstance>>()
 
-    /// Add a remoting provider to be loaded on startup with UseWebSharper.
-    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<TProvider>.
+    /// Add a remoting handler to be loaded on startup with UseWebSharper.
+    /// The client can invoke it using WebSharper.JavaScript.Pervasives.Remote<THandler>.
     [<Extension>]
-    static member AddWebSharperRemoting<'TProvider when 'TProvider : not struct>
-            (this: IServiceCollection, provider: 'TProvider) =
-        this.AddSingleton<'TProvider>(provider)
-            .AddSingleton<IRemotingService>(RemotingService provider)
+    static member AddWebSharperRemoting<'THandler when 'THandler : not struct>
+            (this: IServiceCollection, handler: 'THandler) =
+        this.AddSingleton<'THandler>(handler)
+            .AddSingleton<IRemotingService>(RemotingService handler)

@@ -70,7 +70,7 @@ type ServiceExtensions =
     [<Extension>]
     static member AddWebSharperRemoting<'THandler, 'TInstance when 'TInstance : not struct>
             (this: IServiceCollection) =
-        this.AddSingleton(ServiceDescriptor(typeof<'THandler>, typeof<'TInstance>))
+        this.AddSingleton<'TInstance, 'TInstance>()
             .AddSingleton<IRemotingService, RemotingService<'THandler, 'TInstance>>()
 
     /// <summary>

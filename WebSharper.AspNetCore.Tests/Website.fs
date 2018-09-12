@@ -11,22 +11,14 @@ open WebSharper.UI.Templating
 
 type IndexTemplate = Template<"Main.html", clientLoad = ClientLoad.FromDocument>
 
-type UserSession(logger: ILogger<UserSession>) =
-
+[<AbstractClass>]
+type RpcUserSession() =
     [<Rpc>]
-    member this.GetLogin() =
-        logger.LogInformation("Getting user login")
-        WebSharper.Web.Remoting.GetContext().UserSession.GetLoggedInUser()
-
+    abstract GetLogin : unit -> Async<option<string>>
     [<Rpc>]
-    member this.Login(name: string) =
-        logger.LogInformation("User logging in as {0}", name)
-        WebSharper.Web.Remoting.GetContext().UserSession.LoginUser(name)
-
+    abstract Login : name: string -> Async<unit>
     [<Rpc>]
-    member this.Logout() =
-        logger.LogInformation("User logging out")
-        WebSharper.Web.Remoting.GetContext().UserSession.Logout()
+    abstract Logout : unit -> Async<unit>
 
 type EndPoint =
     | [<EndPoint "/">] Home
@@ -67,10 +59,10 @@ module Client =
                 Var.Set NewTaskName "")
             .ClearCompleted(fun _ -> Tasks.RemoveBy (fun task -> task.Done.Value))
             .Login(Login)
-            .DoLogin(fun _ -> Remote<UserSession>.Login Login.Value |> Async.Start)
+            .DoLogin(fun _ -> Remote<RpcUserSession>.Login Login.Value |> Async.Start)
             .GetLogin(fun _ ->
                 async {
-                    let! u = Remote<UserSession>.GetLogin()
+                    let! u = Remote<RpcUserSession>.GetLogin()
                     match u with
                     | None -> "Not logged in."
                     | Some u -> "Logged in as: " + u
@@ -78,9 +70,24 @@ module Client =
                 }
                 |> Async.Start
             )
-            .Logout(fun _ -> Remote<UserSession>.Logout() |> Async.Start)
+            .Logout(fun _ -> Remote<RpcUserSession>.Logout() |> Async.Start)
             .AboutPageLink(aboutPageLink)
             .Doc()
+
+type RpcUserSessionImpl(logger: ILogger<RpcUserSessionImpl>) =
+    inherit RpcUserSession()
+
+    override this.GetLogin() =
+        logger.LogInformation("Getting user login")
+        WebSharper.Web.Remoting.GetContext().UserSession.GetLoggedInUser()
+
+    override this.Login(name: string) =
+        logger.LogInformation("User logging in as {0}", name)
+        WebSharper.Web.Remoting.GetContext().UserSession.LoginUser(name)
+
+    override this.Logout() =
+        logger.LogInformation("User logging out")
+        WebSharper.Web.Remoting.GetContext().UserSession.Logout()
 
 open WebSharper.UI.Server
 

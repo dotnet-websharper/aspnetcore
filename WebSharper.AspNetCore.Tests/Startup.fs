@@ -13,7 +13,7 @@ type Startup() =
 
     member this.ConfigureServices(services: IServiceCollection) =
         services.AddSitelet<Website.MyWebsite>()
-                .AddWebSharperRemoting<Website.UserSession>()
+                .AddWebSharperRemoting<Website.RpcUserSession, Website.RpcUserSessionImpl>()
                 .AddAuthentication("WebSharper")
                 .AddCookie("WebSharper", fun options -> ())
         |> ignore

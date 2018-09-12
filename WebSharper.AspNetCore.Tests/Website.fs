@@ -85,7 +85,7 @@ module Client =
 open WebSharper.UI.Server
 
 type MyWebsite(logger: ILogger<MyWebsite>) =
-    inherit ISiteletService<EndPoint>()
+    inherit SiteletService<EndPoint>()
 
     override this.Sitelet = Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
         let readBody() =

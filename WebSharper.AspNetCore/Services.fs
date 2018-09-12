@@ -12,14 +12,14 @@ type ISiteletService =
 
 /// Define the sitelet to serve by WebSharper.
 [<AbstractClass>]
-type ISiteletService<'T when 'T : equality>() =
+type SiteletService<'T when 'T : equality>() =
     abstract Sitelet : Sitelet<'T>
 
     interface ISiteletService with
         member this.Sitelet = Sitelet.Box this.Sitelet
 
 type DefaultSiteletService<'T when 'T : equality>(sitelet: Sitelet<'T>) =
-    inherit ISiteletService<'T>()
+    inherit SiteletService<'T>()
 
     override this.Sitelet = sitelet
 

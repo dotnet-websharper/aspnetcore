@@ -9,7 +9,7 @@ open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open WebSharper.AspNetCore
 
-type Startup(loggerFactory: ILoggerFactory, config: IConfiguration) =
+type Startup() =
 
     member this.ConfigureServices(services: IServiceCollection) =
         services.AddSitelet<Website.MyWebsite>()

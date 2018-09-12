@@ -145,6 +145,7 @@ type WebSharperOptions
             else None
         WebSharperOptions(services, env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet, useSitelets, useRemoting)
 
+/// Defines settings for a WebSharper application.
 type WebSharperBuilder(services: IServiceProvider) =
     let mutable _sitelet = None
     let mutable _config = None
@@ -154,38 +155,61 @@ type WebSharperBuilder(services: IServiceProvider) =
     let mutable _useSitelets = true
     let mutable _useRemoting = true
 
+    /// <summary>Defines the sitelet to serve.</summary>
+    /// <remarks>
+    /// Using <c>AddSitelet</c> in <c>ConfigureServices</c> is preferred.
+    /// </remarks>
     member this.Sitelet<'T when 'T : equality>(sitelet: Sitelet<'T>) =
         _sitelet <- Some (Sitelet.Box sitelet)
         this
 
+    /// <summary>Defines the configuration to be used by WebSharper.</summary>
+    /// <remarks>Default: the host configuration's "websharper" subsection.</remarks>
     member this.Config(config: IConfiguration) =
         _config <- Some config
         this
 
+    /// <summary>Defines the logger for WebSharper internal messages.</summary>
     member this.Logger(logger: ILogger) =
         _logger <- Some logger
         this
 
+    /// <summary>Defines the logger factory for WebSharper internal messages.</summary>
     member this.Logger(loggerFactory: ILoggerFactory) =
         _logger <- Some (loggerFactory.CreateLogger<WebSharperOptions>() :> ILogger)
         this
 
+    /// <summary>Defines the directory to look for assemblies with WebSharper metadata.</summary>
+    /// <remarks>Default: the directory where WebSharper.AspNetCore.dll is located.</remarks>
     member this.BinDir(binDir: string) =
         _binDir <- Some binDir
         this
 
+    /// <summary>Defines the name of the authentication scheme to use for <c>Web.Context.UserSession</c>.</summary>
+    /// <remarks>Default: "WebSharper".</remarks>
     member this.AuthenticationScheme(scheme: string) =
         _authScheme <- Some scheme
         this
 
+    /// <summary>Defines whether to serve Sitelets.</summary>
+    /// <remarks>
+    /// <para>
+    /// If true and the Sitelet is neither defined here nor in <c>ConfigureServices</c>,
+    /// looks for a Sitelet marked with <c>WebsiteAttribute</c> in the loaded assemblies.
+    /// </para>
+    /// <para>Default: true.</para>
+    /// </remarks>
     member this.UseSitelets([<Optional; DefaultParameterValue true>] useSitelets: bool) =
         _useSitelets <- useSitelets
         this
 
+    /// <summary>Defines whether to serve Remote functions.</summary>
+    /// <remarks>Default: true.</remarks>
     member this.UseRemoting([<Optional; DefaultParameterValue true>] useRemoting: bool) =
         _useRemoting <- useRemoting
         this
 
+    /// Builds WebSharper options.
     member this.Build() =
         let o = WebSharperOptions.Create(services, _sitelet, _config, _logger, _binDir, _useSitelets, _useRemoting)
         _authScheme |> Option.iter (fun s -> o.AuthenticationScheme <- s)

@@ -25,7 +25,7 @@ NUGET
       System.Threading.Thread (>= 4.0) - restriction: && (< net45) (>= netstandard1.6)
       System.Threading.ThreadPool (>= 4.0.10) - restriction: && (< net45) (>= netstandard1.6)
       System.Threading.Timer (>= 4.0.1) - restriction: && (< net45) (>= netstandard1.6)
-    HtmlAgilityPack (1.8.7)
+    HtmlAgilityPack (1.8.9)
       Microsoft.NETCore.UniversalWindowsPlatform (>= 5.2.3) - restriction: >= uap10.0
       NETStandard.Library (>= 1.6.1) - restriction: && (< net40) (>= netstandard1.6) (< netstandard2.0)
       System.Net.Http (>= 4.3.1) - restriction: || (&& (< net40) (>= netstandard1.3) (< netstandard1.6) (< win8)) (&& (< net40) (>= netstandard1.6) (< netstandard2.0))
@@ -262,7 +262,7 @@ NUGET
       runtime.win10-x86.Microsoft.Net.UWPCoreRuntimeSdk (>= 2.1.2) - restriction: >= uap10.1
     Microsoft.NETCore.Platforms (2.0) - restriction: || (&& (< net20) (>= net45) (< netstandard1.3)) (&& (< net20) (>= net46) (< netstandard1.3)) (&& (< net20) (>= net46) (< netstandard1.4)) (&& (< net20) (>= net461) (< netstandard1.3)) (&& (< net20) (>= net461) (< netstandard2.0)) (&& (< net20) (>= netstandard1.0) (< portable-net45+win8+wpa81)) (&& (< net20) (< netstandard1.0) (>= netstandard1.3) (< portable-net45+win8)) (&& (< net20) (< netstandard1.0) (>= netstandard1.3) (< win8)) (&& (< net20) (>= netstandard1.1) (< netstandard1.2) (< win8)) (&& (< net20) (>= netstandard1.2) (< netstandard1.3) (< win8) (< wpa81)) (&& (< net20) (< netstandard1.2) (>= netstandard1.3) (< win8)) (&& (< net20) (>= netstandard1.3) (< netstandard1.4) (< win8) (< wpa81)) (&& (< net20) (>= netstandard1.3) (< portable-net45+win8+wpa81)) (&& (< net20) (< netstandard1.3) (>= netstandard1.4) (< win8) (< wpa81)) (&& (< net20) (< netstandard1.3) (>= netstandard1.5)) (&& (< net20) (< netstandard1.3) (>= netstandard1.6)) (&& (< net20) (< netstandard1.3) (>= netstandard2.0)) (&& (< net20) (>= netstandard1.4) (< netstandard1.5) (< win8) (< wpa81)) (&& (< net20) (>= netstandard1.5) (< netstandard1.6)) (&& (< net20) (>= netstandard1.6) (< netstandard2.0)) (&& (>= netcoreapp2.0) (< netstandard1.3)) (&& (>= netcoreapp2.0) (< netstandard2.0)) (&& (< netstandard1.0) (>= netstandard1.3) (>= win8)) (&& (< netstandard1.3) (< win8) (>= wpa81)) (>= uap10.0) (>= wp8)
     Microsoft.NETCore.Targets (1.1.2) - restriction: && (< monoandroid) (< monotouch) (< net45) (>= netstandard1.6) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)
-    Microsoft.NETCore.UniversalWindowsPlatform (6.1.7) - restriction: >= uap10.0
+    Microsoft.NETCore.UniversalWindowsPlatform (6.1.9) - restriction: >= uap10.0
       Microsoft.Net.Native.Compiler (>= 2.1.8) - restriction: >= uap10.1
       Microsoft.Net.UWPCoreRuntimeSdk (>= 2.1.2) - restriction: >= uap10.1
       Microsoft.NETCore.Platforms (>= 2.0) - restriction: >= uap10.1
@@ -571,8 +571,8 @@ NUGET
       System.Reflection.Extensions (>= 4.3) - restriction: || (>= dnxcore50) (&& (< monoandroid) (< monotouch) (< net45) (>= netstandard1.3) (< win8) (< wpa81) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos))
       System.Resources.ResourceManager (>= 4.3) - restriction: || (>= dnxcore50) (&& (< monoandroid) (< monotouch) (< net45) (>= netstandard1.3) (< win8) (< wpa81) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos))
       System.Runtime (>= 4.3) - restriction: || (>= dnxcore50) (&& (< monoandroid) (< monotouch) (< net45) (>= netstandard1.3) (< win8) (< wpa81) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (&& (< monoandroid) (< net45) (>= netstandard1.0) (< netstandard1.3) (< win8) (< wp8) (< wpa81))
-    System.Net.Http (4.3.3) - restriction: || (&& (< net40) (>= netstandard1.3) (< netstandard1.6) (< win8)) (&& (< net40) (>= netstandard1.6) (< netstandard2.0)) (&& (< net40) (>= netstandard2.0)) (>= uap10.0)
-      Microsoft.NETCore.Platforms (>= 1.1) - restriction: || (>= dnxcore50) (&& (< monoandroid) (< monotouch) (< net45) (>= netstandard1.6) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (&& (< monoandroid) (< net45) (>= netstandard1.3) (< netstandard1.6) (< win8) (< wpa81))
+    System.Net.Http (4.3.4) - restriction: || (&& (< net40) (>= netstandard1.3) (< netstandard1.6) (< win8)) (&& (< net40) (>= netstandard1.6) (< netstandard2.0)) (&& (< net40) (>= netstandard2.0)) (>= uap10.0)
+      Microsoft.NETCore.Platforms (>= 1.1.1) - restriction: || (>= dnxcore50) (&& (< monoandroid) (< monotouch) (< net45) (>= netstandard1.6) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (&& (< monoandroid) (< net45) (>= netstandard1.3) (< netstandard1.6) (< win8) (< wpa81))
       Microsoft.Win32.Primitives (>= 4.3) - restriction: && (< monoandroid) (< net45) (>= netstandard1.3) (< netstandard1.6) (< win8) (< wpa81)
       runtime.native.System (>= 4.3) - restriction: && (< monoandroid) (< monotouch) (< net45) (>= netstandard1.6) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)
       runtime.native.System.Net.Http (>= 4.3) - restriction: && (< monoandroid) (< monotouch) (< net45) (>= netstandard1.6) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)
@@ -943,13 +943,13 @@ NUGET
       System.Xml.XmlDocument (>= 4.3) - restriction: || (&& (< monoandroid) (< monotouch) (>= netstandard1.3) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (>= net46)
       System.Xml.XPath (>= 4.3) - restriction: || (&& (< monoandroid) (< monotouch) (>= netstandard1.3) (< xamarinios) (< xamarinmac) (< xamarintvos) (< xamarinwatchos)) (>= net46)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.5.2.308)
-    WebSharper.FSharp (4.5.2.308)
-      WebSharper (4.5.2.308)
-    WebSharper.UI (4.5.1.144)
+    WebSharper (4.5.4.317)
+    WebSharper.FSharp (4.5.4.317)
+      WebSharper (4.5.4.317)
+    WebSharper.UI (4.5.4.151)
       HtmlAgilityPack (>= 1.7.1)
       System.Xml.XDocument (>= 4.3)
-      WebSharper (>= 4.5.2 < 4.6)
+      WebSharper (>= 4.5.4 < 4.6)
 
 GROUP build
 RESTRICTION: == net45

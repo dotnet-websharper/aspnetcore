@@ -74,7 +74,7 @@ type ServiceExtensions =
 
     /// <summary>
     /// Add a remoting handler to be loaded on startup with <c>UseWebSharper</c>.
-    /// The client can invoke it using <c>WebSharper.JavaScript.Pervasives.Remote<THandler></c>.
+    /// The client can invoke it using <c>WebSharper.JavaScript.Pervasives.Remote&lt;THandler&gt;</c>.
     /// </summary>
     [<Extension>]
     static member AddWebSharperRemoting<'THandler when 'THandler : not struct>
@@ -84,7 +84,7 @@ type ServiceExtensions =
 
     /// <summary>
     /// Add a remoting handler to be loaded on startup with <c>UseWebSharper</c>.
-    /// The client can invoke it using <c>WebSharper.JavaScript.Pervasives.Remote<THandler></c>.
+    /// The client can invoke it using <c>WebSharper.JavaScript.Pervasives.Remote&lt;THandler&gt;</c>.
     /// </summary>
     [<Extension>]
     static member AddWebSharperRemoting<'THandler, 'TInstance when 'TInstance : not struct>
@@ -94,7 +94,7 @@ type ServiceExtensions =
 
     /// <summary>
     /// Add a remoting handler to be loaded on startup with <c>UseWebSharper</c>.
-    /// The client can invoke it using <c>WebSharper.JavaScript.Pervasives.Remote<THandler></c>.
+    /// The client can invoke it using <c>WebSharper.JavaScript.Pervasives.Remote&lt;THandler&gt;</c>.
     /// </summary>
     [<Extension>]
     static member AddWebSharperRemoting<'THandler when 'THandler : not struct>

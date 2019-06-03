@@ -20,6 +20,7 @@
 module WebSharper.AspNetCore.Tests.Website
 
 open Microsoft.Extensions.Logging
+open Microsoft.AspNetCore.Authorization
 open WebSharper
 open WebSharper.AspNetCore
 open WebSharper.JavaScript
@@ -44,6 +45,7 @@ type EndPoint =
     | [<EndPoint "/about">] About
     | [<EndPoint "POST /post">] Post
     | [<EndPoint "POST /formdata"; FormData "x">] FormData of x: string 
+    | [<EndPoint "GET /needsLogin">] NeedsLogin
 
 [<JavaScript>]
 [<Require(typeof<Resources.BaseResource>, "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css")>]
@@ -61,7 +63,7 @@ module Client =
 
     let Login = Var.Create ""
 
-    let Main (aboutPageLink: string) =
+    let Main (aboutPageLink: string) (authorizedPageLink: string) =
         IndexTemplate.Body()
             .ListContainer(
                 ListModel.View Tasks |> Doc.BindSeqCached (fun task ->
@@ -91,6 +93,7 @@ module Client =
             )
             .Logout(fun _ -> Remote<RpcUserSession>.Logout() |> Async.Start)
             .AboutPageLink(aboutPageLink)
+            .AuthorizedPageLink(authorizedPageLink)
             .Doc()
 
 type RpcUserSessionImpl(logger: ILogger<RpcUserSessionImpl>) =
@@ -110,8 +113,18 @@ type RpcUserSessionImpl(logger: ILogger<RpcUserSessionImpl>) =
 
 open WebSharper.UI.Server
 
-type MyWebsite(logger: ILogger<MyWebsite>) =
+type MyWebsite(logger: ILogger<MyWebsite>, services: System.IServiceProvider) =
     inherit SiteletService<EndPoint>()
+
+    let forbidden (ctx: Context<EndPoint>) =
+        div [] [
+            p [] [text "You are not logged in!"]
+            p [] [a [attr.href (ctx.Link Home)] [text "Back"]]
+        ]
+        |> Content.Page
+        |> Content.SetStatus Http.Status.Forbidden
+
+    let authorize = Content.Authorize services forbidden [AuthorizeAttribute()]
 
     override this.Sitelet = Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
         let readBody() =
@@ -134,8 +147,9 @@ type MyWebsite(logger: ILogger<MyWebsite>) =
         match ep with
         | Home ->
             let aboutPageLink = ctx.Link About
+            let authorizedPageLink = ctx.Link NeedsLogin
             IndexTemplate()
-                .Main(client <@ Client.Main aboutPageLink @>)
+                .Main(client <@ Client.Main aboutPageLink authorizedPageLink @>)
                 .Doc()
             |> Content.Page
         | About ->
@@ -144,4 +158,11 @@ type MyWebsite(logger: ILogger<MyWebsite>) =
             Content.Text i
         | Post ->
             Content.Text ctx.Request.BodyText
+        | NeedsLogin ->
+            authorize <| fun username ->
+                div [] [
+                    p [] [text (sprintf "Logged in as %s!" username)]
+                    p [] [a [attr.href (ctx.Link Home)] [text "Back"]]
+                ]
+                |> Content.Page
     )

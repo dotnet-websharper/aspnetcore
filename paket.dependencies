@@ -1,4 +1,4 @@
-version 5.142.0
+version 5.207.0
 source https://api.nuget.org/v3/index.json
 source https://daily.websharper.com/nuget
 
@@ -26,13 +26,14 @@ nuget Microsoft.Extensions.Configuration.FileExtensions !~> 2.0.0
 nuget Microsoft.AspNetCore.StaticFiles !~> 2.0.0
 nuget Microsoft.Extensions.Configuration.Json !~> 2.0.0
 nuget Microsoft.AspNetCore !~> 2.0.0
+nuget Microsoft.AspNetCore.Authorization !~> 2.0.0
 
 group build
     framework: net45
     source https://api.nuget.org/v3/index.json
 
     nuget FAKE
-    nuget Paket.Core 5.141.0
+    nuget Paket.Core 5.207.0
 
 group wsbuild
     git https://github.com/dotnet-websharper/build-script

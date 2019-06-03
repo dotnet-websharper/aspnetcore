@@ -11,6 +11,7 @@
     <Compile Include="Context.fs" />
     <Compile Include="Remoting.fs" />
     <Compile Include="Sitelets.fs" />
+    <Compile Include="Content.fs" />
     <Compile Include="WebContextExtensions.fs" />
     <Compile Include="ApplicationBuilderExtensions.fs" />
   </ItemGroup>

@@ -25,6 +25,8 @@ open System.Collections.Specialized
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Authentication
 open WebSharper.Sitelets
+open System.Security.Claims
+
 module Res = WebSharper.Core.Resources
 
 let private stripFinalSlash (s: string) =
@@ -141,8 +143,8 @@ type private UserSession(httpCtx: HttpContext, options: WebSharperOptions) =
     let scheme = options.AuthenticationScheme
 
     let loginUser (username: string) (expiry: option<TimeSpan>) =
-        let identity = System.Security.Principal.GenericIdentity(username)
-        let principal = System.Security.Principal.GenericPrincipal(identity, [||])
+        let claims = [Claim(ClaimTypes.Name, username)]
+        let principal = ClaimsPrincipal(ClaimsIdentity(claims, scheme))
         let props = AuthenticationProperties()
         props.IsPersistent <- expiry.IsSome
         props.ExpiresUtc <-

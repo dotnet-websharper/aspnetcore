@@ -22,6 +22,7 @@ module WebSharper.AspNetCore.Sitelets
 open System
 open System.Threading.Tasks
 open Microsoft.AspNetCore.Http
+open Microsoft.AspNetCore.Http.Features
 open WebSharper.Sitelets
 
 let private writeResponse (resp: Task<Http.Response>) (out: HttpResponse) =
@@ -51,6 +52,9 @@ let Middleware (options: WebSharperOptions) =
             | Some endpoint ->
                 let content = sitelet.Controller.Handle endpoint
                 let response = Content.ToResponse content ctx |> Async.StartAsTask
+                let syncIOFeature = httpCtx.Features.Get<IHttpBodyControlFeature>();
+                if not (isNull syncIOFeature) then
+                    syncIOFeature.AllowSynchronousIO <- true
                 writeResponse response httpCtx.Response
             | None -> next.Invoke()
         )

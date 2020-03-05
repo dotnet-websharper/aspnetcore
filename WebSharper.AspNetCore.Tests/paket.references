@@ -1,6 +1,7 @@
 WebSharper.FSharp
-WebSharper.UI
-Microsoft.AspNetCore.Authentication.Cookies
-Microsoft.AspNetCore.StaticFiles
-Microsoft.AspNetCore
-Microsoft.AspNetCore.SignalR
+group testws
+    WebSharper.UI
+group testnetcore21
+    Microsoft.AspNetCore.Authentication.Cookies
+    Microsoft.AspNetCore.StaticFiles
+    Microsoft.AspNetCore

@@ -25,6 +25,7 @@ open System.Runtime.CompilerServices
 open System.Text.RegularExpressions
 open System.Threading.Tasks
 open WebSharper
+open System.Threading
 
 [<RequireQualifiedAccess>]
 type JsonEncoding =
@@ -39,11 +40,9 @@ type JsonEncoding =
 type private Context = WebSharper.Web.Context
 
 module private Async =
-    //let AwaitUnitTask (tsk : System.Threading.Tasks.Task) =
-    //    tsk.ContinueWith(ignore) |> Async.AwaitTask
 
     let StartAsUnitTask (a : Async<unit>): Task =
-        (a |> Async.StartAsTask).ContinueWith(Action<Task>(ignore))
+        a |> Async.StartAsTask :> Task
 
     [<JavaScript>]
     let FoldAgent initState f =
@@ -244,19 +243,138 @@ module Server =
         | Error of exn
         | Close
 
-    type WebSocketClient<'S2C, 'C2S>(sendMsg, ctx, jP) =
+    open System.Net.WebSockets
+    open Microsoft.AspNetCore.Http
+    open Microsoft.Extensions.Primitives
+
+    // Net.WebSockets.WebSocket
+    [<AbstractClass>]
+    type WebSocketConnection(maxMessageSize) =
+        let maxMessageSize = defaultArg maxMessageSize (1024*64)
+        let mCancellToken = new CancellationTokenSource() 
+        let mutable mWebSocket: Net.WebSockets.WebSocket = null
+        let mutable buffer: byte[] = null
+
+        member x.MaxMessageSize = maxMessageSize
+
+        member x.Close(status: WebSocketCloseStatus, reason: string) =
+            mWebSocket.CloseAsync(status, reason, mCancellToken.Token)
+
+        member x.Abort() =
+            mCancellToken.Cancel()
+
+        member x.SendBinary(buffer: ArraySegment<byte>, endOfMessage) =
+            mWebSocket.SendAsync(buffer, WebSocketMessageType.Binary, endOfMessage, mCancellToken.Token)
+
+        member x.SendBinary(buffer: byte[], endOfMessage) =
+            x.SendBinary(ArraySegment(buffer), endOfMessage)
+
+        member x.SendText(buffer: ArraySegment<byte>, endOfMessage) =
+            mWebSocket.SendAsync(buffer, WebSocketMessageType.Text, endOfMessage, mCancellToken.Token)
+
+        member x.SendText(buffer: byte[], endOfMessage) =
+            x.SendText(ArraySegment(buffer), endOfMessage)
+
+        member x.Send(buffer: ArraySegment<byte>, endOfMessage, messageType) =
+            mWebSocket.SendAsync(buffer, messageType, endOfMessage, mCancellToken.Token)
+            
+        //abstract AuthenticateRequest: request:HttpRequest -> bool  
+        //default x.AuthenticateRequest _ = true
+
+        //abstract AuthenticateRequestAsync: request:HttpRequest -> Task<bool>
+        //default x.AuthenticateRequestAsync _ = Task.FromResult true
+
+        abstract OnOpen: unit -> unit
+        default x.OnOpen() = ()
+        
+        abstract OnOpenAsync: unit -> Task
+        default x.OnOpenAsync() = Task.FromResult<unit>() :> Task
+
+        abstract OnMessageReceived: message:ArraySegment<byte> * messageType:WebSocketMessageType -> Task
+        default x.OnMessageReceived(_, _) = Task.FromResult<unit>() :> Task
+
+        abstract OnClose: closeStatus:Nullable<WebSocketCloseStatus> * closeStatusDescription:string -> unit
+        default x.OnClose(_, _) = ()
+
+        abstract OnCloseAsync: closeStatus:Nullable<WebSocketCloseStatus> * closeStatusDescription:string -> Task
+        default x.OnCloseAsync(_, _) = Task.FromResult<unit>() :> Task
+
+        abstract OnReceiveError: error:exn -> unit
+        default x.OnReceiveError(_) = ()
+
+        member internal x.AcceptSocketAsync(httpCtx: HttpContext) =
+            let rec receive() =
+                async {
+                    let mutable cont = true
+                    try
+                        let! received = mWebSocket.ReceiveAsync(ArraySegment(buffer), mCancellToken.Token) |> Async.AwaitTask
+                    
+                        if received.Count > 0 then
+                            if not received.EndOfMessage then
+                                raise (System.IO.InternalBufferOverflowException("WebSocket message size has exceeded maxMessageSize=" + string maxMessageSize))
+                            do! x.OnMessageReceived(ArraySegment(buffer, 0, received.Count), received.MessageType) |> Async.AwaitTask
+
+                        if received.MessageType = WebSocketMessageType.Close then
+                            cont <- false    
+                    with
+                    | :? TaskCanceledException 
+                    | :? ObjectDisposedException ->
+                        cont <- false
+                    // If this exception is due to the underlying TCP connection going away, treat as a normal close
+                    // rather than a fatal exception.
+                    | :? System.Runtime.InteropServices.COMException as ce 
+                        when ce.ErrorCode = 0x800703e3 || ce.ErrorCode = 0x800704cd || ce.ErrorCode = 0x80070026 ->
+                        ()
+                    | err ->
+                        if not mCancellToken.IsCancellationRequested  then 
+                            x.OnReceiveError(err)
+                        cont <- false
+                    if cont then
+                        do! receive()
+                }
+            
+            async {
+                //httpCtx.Response.Headers.Add("X-Content-Type-Options", StringValues.op_Implicit "nosniff")
+                let! webSocket = httpCtx.WebSockets.AcceptWebSocketAsync() |> Async.AwaitTask
+                mWebSocket <- webSocket
+                // set Context
+                //if x.AuthenticateRequest(httpCtx.Request) then
+                //    let! authorized = x.AuthenticateRequestAsync(httpCtx.Request) |> Async.AwaitTask    
+                //    if authorized then
+                //        let! webSocket = httpCtx.WebSockets.AcceptWebSocketAsync() |> Async.AwaitTask
+                //        mWebSocket <- webSocket
+                //    elif httpCtx.Request.
+
+                x.OnOpen()
+                do! x.OnOpenAsync() |> Async.AwaitTask
+
+                buffer <- Array.zeroCreate maxMessageSize
+                do! receive()  
+
+                try
+                    do! mWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", mCancellToken.Token) |> Async.AwaitTask
+                with _ -> ()
+
+                if not mCancellToken.IsCancellationRequested then
+                    mCancellToken.Cancel()
+
+                x.OnClose(mWebSocket.CloseStatus, mWebSocket.CloseStatusDescription)
+                do! x.OnCloseAsync(mWebSocket.CloseStatus, mWebSocket.CloseStatusDescription) |> Async.AwaitTask
+
+            }
+
+    type WebSocketClient<'S2C, 'C2S>(conn: WebSocketConnection, ctx, jP) =
         let onMessage = Event<'C2S>()
         let onClose = Event<unit>()
         let onError = Event<exn>()
 
         member this.JsonProvider = jP
-        //member this.Connection = conn
+        member this.Connection = conn
         member this.Context : Context = ctx
         member this.PostAsync (value: 'S2C) =
             let msg = MessageCoder.ToJString jP value
-            sendMsg msg
-            //let bytes = System.Text.Encoding.UTF8.GetBytes(msg)
-            //conn.SendText(bytes, true) |> Async.AwaitUnitTask
+            let bytes = System.Text.Encoding.UTF8.GetBytes(msg)
+            conn.SendText(bytes, true) |> Async.AwaitTask
         member this.Post (value: 'S2C) = this.PostAsync value |> Async.Start
         member this.OnMessage = onMessage.Publish
         member this.OnClose = onClose.Publish
@@ -285,84 +403,40 @@ module Server =
 
     type CustomAgent<'S2C, 'C2S, 'Custom, 'State> = CustomWebSocketAgent<'S2C, 'C2S, 'Custom> -> Async<'State * ('State -> CustomMessage<'C2S, 'Custom> -> Async<'State>)>
 
-type IWebSharperClient =
-    abstract Receive: string -> unit
+type private WebSharperWebSocketConnection<'S2C, 'C2S>(maxMessageSize, ctx, jP) =
+    inherit Server.WebSocketConnection(maxMessageSize)
+    let mutable post : option<Server.Message<'C2S> -> unit> = None
+    //val private processor : WebSocketProcessor<'S2C, 'C2S>
 
-//type WebSharperHub() =
-//    inherit Hub<IWebSharperClient>()
+    override x.OnClose(status, desc) =
+        post |> Option.iter (fun p -> p Server.Close)
 
-//    override this.OnConnectedAsync() =
-//        let connected = base.OnConnectedAsync()
-//        async { 
-//            do! connected |> Async.AwaitUnitTask
-//        }
-//        |> Async.StartAsUnitTask
+    //override x.AuthenticateRequest(req) =
+    //    x.processor.AuthenticateRequest |> Option.forall (fun o -> o x.Context.Environment)    
 
-//    override this.OnDisconnectedAsync(error: exn) =
-//        let disconnected = base.OnDisconnectedAsync(error)
-//        async { 
-//            do! disconnected |> Async.AwaitUnitTask
-//        }
-//        |> Async.StartAsUnitTask
+    //override x.AuthenticateRequestAsync(req) =
+    //    x.AuthenticateRequest(req)
+    //    |> System.Threading.Tasks.Task.FromResult 
 
-//    // Receives message from client
-//    member this.Send(message: string) =     
-//        ()
-//        //await Clients.All.SendAsync("ReceiveMessage", user, message);
+    override x.OnOpenAsync() =
+        let cl = Server.WebSocketClient(x, ctx, jP)
+        async {
+            let! a = x.processor.Agent cl
+            x.post <- Some a
+        }
+        |> Async.StartAsTask :> _
 
 
-//type private WebSocketProcessor<'S2C, 'C2S> =
-//    {
-//        Agent : Server.Agent<'S2C, 'C2S>
-//        GetContext : Env -> Context
-//        JsonProvider : Core.Json.Provider
-//        AuthenticateRequest : option<Env -> bool>
-//    }
+    override x.OnMessageReceived(message, typ) =
+        async {
+            let json = System.Text.Encoding.UTF8.GetString(message.Array)
+            let m = MessageCoder.FromJString x.processor.JsonProvider json
+            x.post.Value(Server.Message m)
+        }
+        |> Async.StartAsTask :> _
 
-//type private ProcessWebSocketConnection<'S2C, 'C2S> =
-//    inherit WebSocketConnection
-//    val mutable private post : option<Server.Message<'C2S> -> unit>
-//    val private processor : WebSocketProcessor<'S2C, 'C2S>
-
-//    new (processor) =
-//        { inherit WebSocketConnection()
-//          post = None
-//          processor = processor }
-
-//    new (processor, maxMessageSize) =
-//        { inherit WebSocketConnection(maxMessageSize)
-//          post = None
-//          processor = processor }
-
-//    override x.OnClose(status, desc) =
-//        x.post |> Option.iter (fun p -> p Server.Close)
-
-//    override x.AuthenticateRequest(req) =
-//        x.processor.AuthenticateRequest |> Option.forall (fun o -> o x.Context.Environment)    
-
-//    override x.AuthenticateRequestAsync(req) =
-//        x.AuthenticateRequest(req)
-//        |> System.Threading.Tasks.Task.FromResult 
-
-//    override x.OnOpenAsync() =
-//        let cl = Server.WebSocketClient(x, x.processor.GetContext, x.processor.JsonProvider)
-//        async {
-//            let! a = x.processor.Agent cl
-//            x.post <- Some a
-//        }
-//        |> Async.StartAsTask :> _
-
-
-//    override x.OnMessageReceived(message, typ) =
-//        async {
-//            let json = System.Text.Encoding.UTF8.GetString(message.Array)
-//            let m = MessageCoder.FromJString x.processor.JsonProvider json
-//            x.post.Value(Server.Message m)
-//        }
-//        |> Async.StartAsTask :> _
-
-//    override x.OnReceiveError(ex) =
-//        x.post.Value(Server.Error ex)
+    override x.OnReceiveError(ex) =
+        x.post.Value(Server.Error ex)
 
 //type private WebSocketServiceLocator<'S2C, 'C2S>(processor : WebSocketProcessor<'S2C, 'C2S>, maxMessageSize : option<int>) =
 //    interface IServiceLocator with
@@ -407,13 +481,20 @@ open WebSharper.AspNetCore
 
 module Middlewares =
     let Simple<'S2C, 'C2S> (endpoint: Endpoint<'S2C, 'C2S>, agent: Server.Agent<'S2C, 'C2S>, maxMessageSize : option<int>, onAuth: option<Env -> bool>) : Func<HttpContext, Func<Task>, Task> =
+        let json =
+            match endpoint.JsonEncoding with
+            | JsonEncoding.Typed -> WebSharper.Web.Shared.Json
+            | JsonEncoding.Readable -> WebSharper.Web.Shared.PlainJson
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
             let ctx = Context.GetOrMake httpCtx Unchecked.defaultof<WebSharperOptions> //options
             let ep = (if endpoint.Route.StartsWith "/" then "" else "/") + endpoint.Route 
-            if httpCtx.Request.Path = ep && httpCtx.WebSockets.IsWebSocketRequest then
+            if httpCtx.Request.Path.HasValue && httpCtx.Request.Path.Value = ep && httpCtx.WebSockets.IsWebSocketRequest then
                 async {
                     let! webSocket = httpCtx.WebSockets.AcceptWebSocketAsync() |> Async.AwaitTask
-
+                    let client = Server.WebSocketClient(webSocket, ctx, json)
+                    let! a = agent client
+                    BackgroundSocketProcessor
+                    webSocket.po
                 }
                 |> Async.StartAsUnitTask
                 

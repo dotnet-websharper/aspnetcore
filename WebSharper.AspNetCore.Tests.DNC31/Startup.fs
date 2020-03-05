@@ -24,7 +24,6 @@ open System.Threading.Tasks
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.AspNetCore.Http
-open Microsoft.AspNetCore.SignalR
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
@@ -37,8 +36,6 @@ type Startup() =
                 .AddWebSharperRemoting<Website.RpcUserSession, Website.RpcUserSessionImpl>()
                 .AddAuthentication("WebSharper")
                 .AddCookie("WebSharper", fun options -> ())
-        |> ignore
-        services.AddSignalR()
         |> ignore
 
     member this.Configure(app: IApplicationBuilder, env: IHostingEnvironment) =

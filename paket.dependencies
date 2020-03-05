@@ -1,38 +1,29 @@
-version 5.230.0
+version 5.242.2
 source https://api.nuget.org/v3/index.json
 source https://daily.websharper.com/nuget
 
-storage: none
+framework: netstandard2.0, netcoreapp2.1, netcoreapp3.1
 
-nuget FSharp.Core ~> 4.2.0
+storage: none
+strategy: min
+
+nuget FSharp.Core 4.3.4
 nuget WebSharper prerelease
 nuget WebSharper.FSharp prerelease
 nuget WebSharper.UI prerelease
 
-// Library:
-nuget Microsoft.Extensions.Configuration.Abstractions !~> 2.0.0
-nuget Microsoft.Extensions.Logging.Abstractions !~> 2.0.0
-nuget Microsoft.AspNetCore.Authentication.Abstractions !~> 2.0.0
-nuget Microsoft.AspNetCore.Http.Abstractions !~> 2.0.0
-nuget Microsoft.AspNetCore.Hosting.Abstractions !~> 2.0.0
-nuget Newtonsoft.Json >= 11.0
+nuget Microsoft.AspNetCore 2.1.0
+nuget Microsoft.AspNetCore.SignalR 1.0.0
 
-// Tests:
-nuget Microsoft.Extensions.Configuration !~> 2.0.0
-nuget Microsoft.Extensions.Logging !~> 2.0.0
-nuget Microsoft.AspNetCore.Authentication.Cookies !~> 2.0.0
-nuget Microsoft.AspNetCore.Diagnostics !~> 2.0.0
-nuget Microsoft.Extensions.Configuration.FileExtensions !~> 2.0.0
-nuget Microsoft.AspNetCore.StaticFiles !~> 2.0.0
-nuget Microsoft.Extensions.Configuration.Json !~> 2.0.0
-nuget Microsoft.AspNetCore !~> 2.0.0
+nuget Microsoft.AspNetCore.Authentication.Cookies 2.1.0
+nuget Microsoft.AspNetCore.StaticFiles 2.1.0
 
 group build
     framework: net45
     source https://api.nuget.org/v3/index.json
 
     nuget FAKE
-    nuget Paket.Core 5.230.0
+    nuget Paket.Core 5.242.2
 
 group wsbuild
     git https://github.com/dotnet-websharper/build-script

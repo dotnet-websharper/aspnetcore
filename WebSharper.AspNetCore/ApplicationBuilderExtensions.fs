@@ -52,7 +52,7 @@ type ApplicationBuilderExtensions =
             [<Optional>] config: IConfiguration,
             [<Optional>] binDir: string
         ) =
-        WebSharperOptions.Create(this.ApplicationServices, None, Option.ofObj config, None, Option.ofObj binDir, false, true)
+        WebSharperOptions.Create(this.ApplicationServices, None, Option.ofObj config, None, Option.ofObj binDir, false, true, fun _ _ -> ())
         |> this.UseWebSharperRemoting
 
     // Sitelets
@@ -82,6 +82,7 @@ type ApplicationBuilderExtensions =
     static member UseWebSharper(this: IApplicationBuilder, options: WebSharperOptions) =
         if options.UseRemoting then this.UseWebSharperRemoting(options) |> ignore
         if options.UseSitelets then this.UseWebSharperSitelets(options) |> ignore
+        options.UseExtension this options
         this
 
     [<Extension>]

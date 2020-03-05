@@ -26,6 +26,7 @@ open System.Text.RegularExpressions
 open System.Threading.Tasks
 open WebSharper
 open System.Threading
+open Microsoft.AspNetCore.Builder
 
 [<RequireQualifiedAccess>]
 type JsonEncoding =
@@ -88,19 +89,19 @@ type Endpoint<'S2C, 'C2S> =
             JsonEncoding = defaultArg encoding JsonEncoding.Typed
         } : Endpoint<'S2C, 'C2S>
 
-    //static member Create (app: IAppBuilder, route: string, ?encoding: JsonEncoding) =
-    //    let addr = (app.Properties.["host.Addresses"] :?> List<IDictionary<string,obj>>).[0]
-    //    let wsuri =
-    //        let scheme = Helpers.getScheme <| (addr.["scheme"] :?> string)
-    //        let host = addr.["host"] :?> string
-    //        let port = addr.["port"] :?> string
-    //        let path = addr.["path"] :?> string
-    //        scheme + "://" + host + ":" + port + path
-    //    {
-    //        URI = wsuri
-    //        Route = route
-    //        JsonEncoding = defaultArg encoding JsonEncoding.Typed
-    //    } : Endpoint<'S2C, 'C2S>
+    static member Create (app: IApplicationBuilder, route: string, ?encoding: JsonEncoding) =
+        let addr = (app.Properties.["host.Addresses"] :?> List<IDictionary<string,obj>>).[0]
+        let wsuri =
+            let scheme = Helpers.getScheme <| (addr.["scheme"] :?> string)
+            let host = addr.["host"] :?> string
+            let port = addr.["port"] :?> string
+            let path = addr.["path"] :?> string
+            scheme + "://" + host + ":" + port + path
+        {
+            URI = wsuri
+            Route = route
+            JsonEncoding = defaultArg encoding JsonEncoding.Typed
+        } : Endpoint<'S2C, 'C2S>
 
 module MessageCoder =
     module J = WebSharper.Core.Json
@@ -403,7 +404,7 @@ module Server =
 
     type CustomAgent<'S2C, 'C2S, 'Custom, 'State> = CustomWebSocketAgent<'S2C, 'C2S, 'Custom> -> Async<'State * ('State -> CustomMessage<'C2S, 'Custom> -> Async<'State>)>
 
-type private WebSharperWebSocketConnection<'S2C, 'C2S>(maxMessageSize, ctx, jP) =
+type private WebSharperWebSocketConnection<'S2C, 'C2S>(maxMessageSize, ctx, jP, agent: Server.Agent<'S2C, 'C2S>) =
     inherit Server.WebSocketConnection(maxMessageSize)
     let mutable post : option<Server.Message<'C2S> -> unit> = None
     //val private processor : WebSocketProcessor<'S2C, 'C2S>
@@ -421,8 +422,8 @@ type private WebSharperWebSocketConnection<'S2C, 'C2S>(maxMessageSize, ctx, jP) 
     override x.OnOpenAsync() =
         let cl = Server.WebSocketClient(x, ctx, jP)
         async {
-            let! a = x.processor.Agent cl
-            x.post <- Some a
+            let! a = agent cl
+            post <- Some a
         }
         |> Async.StartAsTask :> _
 
@@ -430,157 +431,113 @@ type private WebSharperWebSocketConnection<'S2C, 'C2S>(maxMessageSize, ctx, jP) 
     override x.OnMessageReceived(message, typ) =
         async {
             let json = System.Text.Encoding.UTF8.GetString(message.Array)
-            let m = MessageCoder.FromJString x.processor.JsonProvider json
-            x.post.Value(Server.Message m)
+            let m = MessageCoder.FromJString jP json
+            post.Value(Server.Message m)
         }
         |> Async.StartAsTask :> _
 
     override x.OnReceiveError(ex) =
-        x.post.Value(Server.Error ex)
-
-//type private WebSocketServiceLocator<'S2C, 'C2S>(processor : WebSocketProcessor<'S2C, 'C2S>, maxMessageSize : option<int>) =
-//    interface IServiceLocator with
-
-//        member x.GetService(typ) =
-//            raise <| System.NotImplementedException()
-
-//        member x.GetInstance(t : System.Type) =
-//            let ctor =
-//                t.GetConstructor [|
-//                    yield processor.GetType()
-//                    match maxMessageSize with Some _ -> yield typeof<int> | None -> ()
-//                |]
-//            ctor.Invoke [|
-//                yield box processor
-//                match maxMessageSize with Some m -> yield box m | None -> ()
-//            |]
-
-//        member x.GetInstance(t, key) =
-//            raise <| System.NotImplementedException()
-
-//        member x.GetInstance<'TService>() =
-//            (x :> IServiceLocator).GetInstance(typeof<'TService>) :?> 'TService
-
-//        member x.GetInstance<'TService>(key : string) : 'TService =
-//            raise <| System.NotImplementedException()
-
-//        member x.GetAllInstances(t) =
-//            raise <| System.NotImplementedException()
-
-//        member x.GetAllInstances<'TService>() : System.Collections.Generic.IEnumerable<'TService> =
-//            raise <| System.NotImplementedException()
-
-type Env = IDictionary<string, obj>
-type AppFunc = Func<Env, Task>
-type MidFunc = Func<AppFunc, AppFunc>
+        post.Value(Server.Error ex)
 
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.Builder
 open System.Runtime.InteropServices
 open WebSharper.AspNetCore
 
-module Middlewares =
-    let Simple<'S2C, 'C2S> (endpoint: Endpoint<'S2C, 'C2S>, agent: Server.Agent<'S2C, 'C2S>, maxMessageSize : option<int>, onAuth: option<Env -> bool>) : Func<HttpContext, Func<Task>, Task> =
+module private Middleware =
+    let Create<'S2C, 'C2S> 
+        (
+            endpoint: Endpoint<'S2C, 'C2S>, 
+            agent: Server.Agent<'S2C, 'C2S>, 
+            wsOptions, 
+            maxMessageSize : option<int> 
+            //onAuth: Func<HttpRequest, bool>,
+            //onAuthAsync: Func<HttpRequest, bool>
+        ) 
+        : Func<HttpContext, Func<Task>, Task> =
         let json =
             match endpoint.JsonEncoding with
             | JsonEncoding.Typed -> WebSharper.Web.Shared.Json
             | JsonEncoding.Readable -> WebSharper.Web.Shared.PlainJson
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
-            let ctx = Context.GetOrMake httpCtx Unchecked.defaultof<WebSharperOptions> //options
+            let ctx = Context.GetOrMake httpCtx wsOptions
             let ep = (if endpoint.Route.StartsWith "/" then "" else "/") + endpoint.Route 
             if httpCtx.Request.Path.HasValue && httpCtx.Request.Path.Value = ep && httpCtx.WebSockets.IsWebSocketRequest then
-                async {
-                    let! webSocket = httpCtx.WebSockets.AcceptWebSocketAsync() |> Async.AwaitTask
-                    let client = Server.WebSocketClient(webSocket, ctx, json)
-                    let! a = agent client
-                    BackgroundSocketProcessor
-                    webSocket.po
-                }
-                |> Async.StartAsUnitTask
-                
+                let conn = WebSharperWebSocketConnection(maxMessageSize, ctx, json, agent)
+                conn.AcceptSocketAsync(httpCtx) |> Async.StartAsUnitTask
             else
                 next.Invoke()
         )
 
-//type WebSharperWebSocketMiddleware<'S2C, 'C2S>(next: AppFunc, endpoint: Endpoint<'S2C, 'C2S>, agent: Server.Agent<'S2C, 'C2S>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
+    let AdaptStatefulAgent (agent: Server.StatefulAgent<'S2C, 'C2S, 'State>) : Server.Agent<'S2C, 'C2S> =
+        let agent client = async {
+            let! initState, receive = agent client
+            let receive state msg =
+                async {
+                    try return! receive state msg
+                    with exn ->
+                        try return! receive state (Server.Error exn)
+                        with exn -> return state
+                }
+            let agent = Async.FoldAgent initState receive
+            return agent.Post
+        }   
+        agent
 
-//    let json =
-//        match endpoint.JsonEncoding with
-//        | JsonEncoding.Typed -> WebSharper.Web.Shared.Json
-//        | JsonEncoding.Readable -> WebSharper.Web.Shared.PlainJson
-//    let processor =
-//        {
-//            Agent = agent
-//            GetContext = fun env -> env.[EnvKey.WebSharper.Context] :?> _
-//            JsonProvider = json
-//            AuthenticateRequest = onAuth
-//        }
-//    let m =
-//        let ep =
-//            sprintf "^%s%s$"
-//                (if endpoint.Route.StartsWith "/" then "" else "/")
-//                (Regex.Escape(endpoint.Route))
-//            |> Regex
-//        new Owin.WebSocket.WebSocketConnectionMiddleware<ProcessWebSocketConnection<'S2C, 'C2S>>(
-//            // Owin.WebSocket 1.7 doesn't support null next middleware.
-//            // The following can be replaced with just `null` once this is merged:
-//            // https://github.com/bryceg/Owin.WebSocket/pull/28
-//            { new Microsoft.Owin.OwinMiddleware(null) with member this.Invoke(a) = next.Invoke(a.Environment) },
-//            WebSocketServiceLocator<'S2C, 'C2S>(processor, maxMessageSize), ep)
+    let AdaptCustomAgent (agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>) : Server.Agent<'S2C, 'C2S> =
+        let agent client = async {
+            let client = Server.CustomWebSocketAgent(client)
+            let! initState, receive = agent client
+            let receive state msg =
+                async {
+                    try return! receive state msg
+                    with exn ->
+                        try return! receive state (Server.CustomMessage.Error exn)
+                        with exn -> return state
+                }
+            let agent = Async.FoldAgent initState receive
+            client.OnCustom.Add (Server.CustomMessage.Custom >> agent.Post)
+            return function
+            | Server.Close -> agent.Post Server.CustomMessage.Close
+            | Server.Error e -> agent.Post (Server.CustomMessage.Error e)
+            | Server.Message m -> agent.Post (Server.CustomMessage.Message m)
+        }
+        agent
 
-//    member this.Invoke(env: Env) =
-//        let ctx = Microsoft.Owin.OwinContext(env)
-//        m.Invoke(ctx)
+type WebSharperWebSocketOptions 
+    internal
+    (
+        maxMessageSize: option<int> //,
+        //onAuth: Func<HttpRequest, bool>,
+        //onAuthAsync: Func<HttpRequest, Task<bool>>
+    ) =
 
-//    static member AsMidFunc(endpoint: Endpoint<'S2C, 'C2S>, agent: Server.Agent<'S2C, 'C2S>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
-//        MidFunc(fun next ->
-//            let m = new WebSharperWebSocketMiddleware<'S2C, 'C2S>(next, endpoint, agent, ?maxMessageSize = maxMessageSize, ?onAuth = onAuth)
-//            AppFunc(fun env -> m.Invoke(env)))
+    member this.MaxMessageSize = maxMessageSize
 
-//    static member Stateful(next: AppFunc, endpoint: Endpoint<'S2C, 'C2S>, agent: Server.StatefulAgent<'S2C, 'C2S, 'State>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
-//        let agent client = async {
-//            let! initState, receive = agent client
-//            let receive state msg =
-//                async {
-//                    try return! receive state msg
-//                    with exn ->
-//                        try return! receive state (Server.Error exn)
-//                        with exn -> return state
-//                }
-//            let agent = Async.FoldAgent initState receive
-//            return agent.Post
-//        }
-//        new WebSharperWebSocketMiddleware<'S2C, 'C2S>(next, endpoint, agent, ?maxMessageSize = maxMessageSize, ?onAuth = onAuth)
+    //member this.AuthenticateRequest = onAuth
 
-//    static member AsMidFunc(endpoint: Endpoint<'S2C, 'C2S>, agent: Server.StatefulAgent<'S2C, 'C2S, 'State>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
-//        MidFunc(fun next ->
-//            let m = WebSharperWebSocketMiddleware<'S2C, 'C2S>.Stateful(next, endpoint, agent, ?maxMessageSize = maxMessageSize, ?onAuth = onAuth)
-//            AppFunc(fun env -> m.Invoke(env)))
+    //member this.AuthenticateRequestAsync = onAuthAsync
 
-//    static member Custom(next: AppFunc, endpoint: Endpoint<'S2C, 'C2S>, agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
-//        let agent client = async {
-//            let client = Server.CustomWebSocketAgent(client)
-//            let! initState, receive = agent client
-//            let receive state msg =
-//                async {
-//                    try return! receive state msg
-//                    with exn ->
-//                        try return! receive state (Server.CustomMessage.Error exn)
-//                        with exn -> return state
-//                }
-//            let agent = Async.FoldAgent initState receive
-//            client.OnCustom.Add (Server.CustomMessage.Custom >> agent.Post)
-//            return function
-//            | Server.Close -> agent.Post Server.CustomMessage.Close
-//            | Server.Error e -> agent.Post (Server.CustomMessage.Error e)
-//            | Server.Message m -> agent.Post (Server.CustomMessage.Message m)
-//        }
-//        new WebSharperWebSocketMiddleware<'S2C, 'C2S>(next, endpoint, agent, ?maxMessageSize = maxMessageSize, ?onAuth = onAuth)
+type WebSharperWebSocketBuilder() =
+    let mutable _maxMessageSize = None
+    //let mutable _onAuth = Func<HttpRequest, bool>(fun _ -> true)
+    //let mutable _onAuthAsync = Func<HttpRequest, Task<bool>>(fun _ -> Task.FromResult(true))
 
-//    static member AsMidFunc(endpoint: Endpoint<'S2C, 'C2S>, agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
-//        MidFunc(fun next ->
-//            let m = WebSharperWebSocketMiddleware<'S2C, 'C2S>.Custom(next, endpoint, agent, ?maxMessageSize = maxMessageSize, ?onAuth = onAuth)
-//            AppFunc(fun env -> m.Invoke(env)))
+    member this.MaxMessageSize(maxMessageSize: int) =
+        _maxMessageSize <- Some maxMessageSize
+        this
+
+    //member this.AuthenticateRequest(onAuth) =
+    //    _onAuth <- onAuth
+    //    this
+
+    //member this.AuthenticateRequest(onAuthAsync) =
+    //    _onAuthAsync <- onAuthAsync
+    //    this
+
+    member this.Build() =
+        //WebSharperWebSocketOptions(_maxMessageSize, _onAuth, _onAuthAsync)
+        WebSharperWebSocketOptions(_maxMessageSize)
 
 [<Extension; Sealed>]
 type Extensions =
@@ -588,19 +545,36 @@ type Extensions =
     [<Extension>]
     static member UseWebSocket
         (
-            this: IApplicationBuilder, 
+            this: WebSharperBuilder, 
             endpoint: Endpoint<'S2C, 'C2S>, 
             agent: Server.Agent<'S2C, 'C2S>, 
-            [<Optional>] maxMessageSize : int, 
-            [<Optional>] onAuth: Func<Env, bool>
+            [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
         ) =
-        let onAuth = if isNull(box onAuth) then None else Some onAuth.Invoke
-        this.Use(Middlewares.Simple<'S2C, 'C2S>(endpoint, agent, Some maxMessageSize, onAuth))
+        let builder = WebSharperWebSocketBuilder()
+        if not (isNull build) then build.Invoke(builder)
+        let options = builder.Build()
+        this.Use(fun appBuilder wsOptions ->
+            //appBuilder.Use(Middlewares.Simple<'S2C, 'C2S>(endpoint, agent, wsOptions, options.MaxMessageSize, options.AuthenticateRequest, options.AuthenticateRequestAsync))
+            appBuilder.Use(Middleware.Create<'S2C, 'C2S>(endpoint, agent, wsOptions, options.MaxMessageSize))
+            |> ignore
+        )
 
-//    [<Extension>]
-//    static member UseWebSocket(this: IAppBuilder, endpoint: Endpoint<'S2C, 'C2S>, agent: Server.StatefulAgent<'S2C, 'C2S, 'State>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
-//        this.Use(WebSharperWebSocketMiddleware<'S2C, 'C2S>.AsMidFunc(endpoint, agent, ?maxMessageSize = maxMessageSize, ?onAuth = onAuth))
+    [<Extension>]
+    static member UseWebSocket
+        (
+            this: WebSharperBuilder, 
+            endpoint: Endpoint<'S2C, 'C2S>, 
+            agent: Server.StatefulAgent<'S2C, 'C2S, 'State>, 
+            [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
+        ) =
+        this.UseWebSocket(endpoint, Middleware.AdaptStatefulAgent agent, build)
 
-//    [<Extension>]
-//    static member UseWebSocket(this: IAppBuilder, endpoint: Endpoint<'S2C, 'C2S>, agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>, ?maxMessageSize : int, ?onAuth: Env -> bool) =
-//        this.Use(WebSharperWebSocketMiddleware<'S2C, 'C2S>.AsMidFunc(endpoint, agent, ?maxMessageSize = maxMessageSize, ?onAuth = onAuth))
+    [<Extension>]
+    static member UseWebSocket
+        (
+            this: WebSharperBuilder, 
+            endpoint: Endpoint<'S2C, 'C2S>, 
+            agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>, 
+            [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
+        ) =
+        this.UseWebSocket(endpoint, Middleware.AdaptCustomAgent agent, build)

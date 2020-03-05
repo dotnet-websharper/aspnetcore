@@ -61,7 +61,7 @@ module Client =
 
     let Login = Var.Create ""
 
-    let Main (aboutPageLink: string) =
+    let Main (aboutPageLink: string) wsep =
         IndexTemplate.Body()
             .ListContainer(
                 ListModel.View Tasks |> Doc.BindSeqCached (fun task ->
@@ -90,6 +90,7 @@ module Client =
                 |> Async.Start
             )
             .Logout(fun _ -> Remote<RpcUserSession>.Logout() |> Async.Start)
+            .WebSocketTest(WebSocketClient.WebSocketTest wsep)
             .AboutPageLink(aboutPageLink)
             .Doc()
 
@@ -134,8 +135,9 @@ type MyWebsite(logger: ILogger<MyWebsite>) =
         match ep with
         | Home ->
             let aboutPageLink = ctx.Link About
+            let wsep = WebSocketClient.MyEndPoint (ctx.RequestUri.ToString())
             IndexTemplate()
-                .Main(client <@ Client.Main aboutPageLink @>)
+                .Main(client <@ Client.Main aboutPageLink wsep @>)
                 .Doc()
             |> Content.Page
         | About ->

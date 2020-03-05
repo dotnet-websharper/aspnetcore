@@ -1165,6 +1165,8 @@ NUGET
   remote: https://daily.websharper.com/nuget
     WebSharper (4.6.1.381)
       FSharp.Core (>= 4.2.3)
+    WebSharper.FSharp (4.6.1.381)
+      WebSharper (4.6.1.381)
     WebSharper.UI (4.6.1.207)
       HtmlAgilityPack (>= 1.7.1)
       System.Xml.XDocument (>= 4.3)

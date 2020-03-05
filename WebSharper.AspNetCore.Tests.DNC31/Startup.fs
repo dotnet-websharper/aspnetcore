@@ -27,7 +27,9 @@ open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
 open WebSharper.AspNetCore        
+open WebSharper.AspNetCore.WebSocket
 
 type Startup() =
 
@@ -38,11 +40,15 @@ type Startup() =
                 .AddCookie("WebSharper", fun options -> ())
         |> ignore
 
-    member this.Configure(app: IApplicationBuilder, env: IHostingEnvironment) =
+    member this.Configure(app: IApplicationBuilder, env: IWebHostEnvironment, cfg: IConfiguration) =
         if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
 
         app.UseAuthentication()
-            .UseWebSharper()
+            .UseWebSockets()
+            .UseWebSharper(fun ws ->
+                ws.UseWebSocket(WebSocketServer.MyEndPoint, WebSocketServer.Start())
+                |> ignore
+            )
             .UseStaticFiles()
             .Run(fun context ->
                 context.Response.StatusCode <- 404

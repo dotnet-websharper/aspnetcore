@@ -237,9 +237,10 @@ type WebSharperBuilder(services: IServiceProvider) =
 
     /// <summary>Adds an extra configuration step to execute that gets final the <c>WebSharperOptions</c> instance.</summary>
     member this.Use(useExtension: Func<IApplicationBuilder, WebSharperOptions, unit>) =
+        let prev = _useExtension
         _useExtension <- 
             fun appBuilder options ->
-                _useExtension appBuilder options
+                prev appBuilder options
                 useExtension.Invoke(appBuilder, options)
 
     /// Builds WebSharper options.

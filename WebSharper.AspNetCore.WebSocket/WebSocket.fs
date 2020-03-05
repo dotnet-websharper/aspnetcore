@@ -2,7 +2,7 @@
 //
 // This file is part of WebSharper
 //
-// Copyright (c) 2008-2018 IntelliFactory
+// Copyright (c) 2008-2020 IntelliFactory
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you
 // may not use this file except in compliance with the License.  You may
@@ -255,8 +255,11 @@ module Server =
         let mCancellToken = new CancellationTokenSource() 
         let mutable mWebSocket: Net.WebSockets.WebSocket = null
         let mutable buffer: byte[] = null
+        let mutable httpContext: HttpContext = null
 
         member x.MaxMessageSize = maxMessageSize
+
+        member x.Context = httpContext
 
         member x.Close(status: WebSocketCloseStatus, reason: string) =
             mWebSocket.CloseAsync(status, reason, mCancellToken.Token)
@@ -338,7 +341,7 @@ module Server =
                 //httpCtx.Response.Headers.Add("X-Content-Type-Options", StringValues.op_Implicit "nosniff")
                 let! webSocket = httpCtx.WebSockets.AcceptWebSocketAsync() |> Async.AwaitTask
                 mWebSocket <- webSocket
-                // set Context
+                httpContext <- httpCtx
                 //if x.AuthenticateRequest(httpCtx.Request) then
                 //    let! authorized = x.AuthenticateRequestAsync(httpCtx.Request) |> Async.AwaitTask    
                 //    if authorized then

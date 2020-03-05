@@ -32,6 +32,7 @@ group testws
     storage: none
     
     nuget WebSharper.UI prerelease
+    nuget WebSharper.FSharp prerelease
 
 group testnetcore21
     source https://api.nuget.org/v3/index.json

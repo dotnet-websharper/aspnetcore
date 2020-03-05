@@ -6,6 +6,8 @@
     <WebProjectOutputDir>$(MSBuildThisFileDirectory)/wwwroot</WebProjectOutputDir>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="WebSocketServer.fs" />
+    <Compile Include="WebSocketClient.fs" />
     <Compile Include="Website.fs" />
     <Compile Include="Startup.fs" />
     <Compile Include="Program.fs" />
@@ -13,6 +15,7 @@
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WebSharper.AspNetCore.WebSocket\WebSharper.AspNetCore.WebSocket.fsproj" />
     <ProjectReference Include="..\WebSharper.AspNetCore\WebSharper.AspNetCore.fsproj" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />

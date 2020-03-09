@@ -474,30 +474,12 @@ module private Middleware =
         }
         agent
 
-type WebSharperWebSocketOptions 
-    internal
-    (
-        maxMessageSize: option<int>,
-        jsonEncoding: JsonEncoding
-        //onAuth: Func<HttpRequest, bool>,
-        //onAuthAsync: Func<HttpRequest, Task<bool>>
-    ) =
-
-    member this.MaxMessageSize = maxMessageSize
-
-    member this.JsonEncoding = jsonEncoding
-
-    //member this.AuthenticateRequest = onAuth
-
-    //member this.AuthenticateRequestAsync = onAuthAsync
-
 type WebSharperWebSocketBuilder() =
     let mutable _maxMessageSize = None
     let mutable _jsonEncoding = JsonEncoding.Typed
+    let mutable onBuild = ignore
     //let mutable _onAuth = Func<HttpRequest, bool>(fun _ -> true)
     //let mutable _onAuthAsync = Func<HttpRequest, Task<bool>>(fun _ -> Task.FromResult(true))
-
-    let mutable onBuild = fun () -> ()
 
     member this.MaxMessageSize(maxMessageSize: int) =
         _maxMessageSize <- Some maxMessageSize
@@ -507,6 +489,21 @@ type WebSharperWebSocketBuilder() =
         _jsonEncoding <- jsonEncoding
         this
 
+    member this.Use(agent: Server.Agent<'S2C, 'C2S>) =
+        onBuild <-
+            fun (wsBuilder: WebSharperBuilder, route) -> 
+                wsBuilder.Use(fun appBuilder wsOptions ->
+                    appBuilder.Use(Middleware.Create<'S2C, 'C2S>(route, agent, wsOptions, _jsonEncoding, _maxMessageSize))
+                    |> ignore
+                )
+        this
+
+    member this.Use(agent: Server.StatefulAgent<'S2C, 'C2S, 'State>) =
+        this.Use(Middleware.AdaptStatefulAgent agent)
+
+    member this.Use(agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>) =
+        this.Use(Middleware.AdaptCustomAgent agent)
+
     //member this.AuthenticateRequest(onAuth) =
     //    _onAuth <- onAuth
     //    this
@@ -515,9 +512,8 @@ type WebSharperWebSocketBuilder() =
     //    _onAuthAsync <- onAuthAsync
     //    this
 
-    member internal this.Build() =
-        //WebSharperWebSocketOptions(_maxMessageSize, _onAuth, _onAuthAsync)
-        WebSharperWebSocketOptions(_maxMessageSize, _jsonEncoding)
+    member internal this.Build(wsBuilder: WebSharperBuilder, route) =
+        onBuild (wsBuilder, route)
 
 [<Extension; Sealed>]
 type Extensions =
@@ -527,34 +523,28 @@ type Extensions =
         (
             this: WebSharperBuilder, 
             route: string, 
-            agent: Server.Agent<'S2C, 'C2S>, 
             [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
         ) =
         let builder = WebSharperWebSocketBuilder()
         if not (isNull build) then build.Invoke(builder)
-        let options = builder.Build()
-        this.Use(fun appBuilder wsOptions ->
-            //appBuilder.Use(Middlewares.Simple<'S2C, 'C2S>(endpoint, agent, wsOptions, options.MaxMessageSize, options.AuthenticateRequest, options.AuthenticateRequestAsync))
-            appBuilder.Use(Middleware.Create<'S2C, 'C2S>(route, agent, wsOptions, options.JsonEncoding, options.MaxMessageSize))
-            |> ignore
-        )
+        builder.Build(this, route)
 
-    [<Extension>]
-    static member UseWebSocket
-        (
-            this: WebSharperBuilder, 
-            route: string, 
-            agent: Server.StatefulAgent<'S2C, 'C2S, 'State>, 
-            [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
-        ) =
-        this.UseWebSocket(route, Middleware.AdaptStatefulAgent agent, build)
+    //[<Extension>]
+    //static member UseWebSocket
+    //    (
+    //        this: WebSharperBuilder, 
+    //        route: string, 
+    //        agent: Server.StatefulAgent<'S2C, 'C2S, 'State>, 
+    //        [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
+    //    ) =
+    //    this.UseWebSocket(route, Middleware.AdaptStatefulAgent agent, build)
 
-    [<Extension>]
-    static member UseWebSocket
-        (
-            this: WebSharperBuilder, 
-            route: string, 
-            agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>, 
-            [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
-        ) =
-        this.UseWebSocket(route, Middleware.AdaptCustomAgent agent, build)
+    //[<Extension>]
+    //static member private UseWebSocket
+    //    (
+    //        this: WebSharperBuilder, 
+    //        route: string, 
+    //        agent: Server.CustomAgent<'S2C, 'C2S, 'Custom, 'State>, 
+    //        [<Optional>] build: System.Action<WebSharperWebSocketBuilder>
+    //    ) =
+    //    this.UseWebSocket(route, Middleware.AdaptCustomAgent agent, build)

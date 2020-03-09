@@ -46,6 +46,12 @@ type EndPoint =
     | [<EndPoint "POST /formdata"; FormData "x">] FormData of x: string 
 
 [<JavaScript>]
+type SomeRecord = { Name : string }
+
+[<Rpc>] 
+let DoSomething () = async { return { Name = "Yo." } }
+
+[<JavaScript>]
 [<Require(typeof<Resources.BaseResource>, "//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css")>]
 module Client =
     open WebSharper.UI.Client
@@ -90,6 +96,13 @@ module Client =
                 |> Async.Start
             )
             .Logout(fun _ -> Remote<RpcUserSession>.Logout() |> Async.Start)
+            .RemotingTest(
+                async {
+                    let! yo = DoSomething()
+                    return div [] [text yo.Name]
+                }
+                |> Doc.Async 
+            )
             .WebSocketTest(WebSocketClient.WebSocketTest wsep)
             .AboutPageLink(aboutPageLink)
             .Doc()

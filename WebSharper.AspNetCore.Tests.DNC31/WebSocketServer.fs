@@ -43,7 +43,7 @@ let Start() : StatefulAgent<S2CMessage, C2SMessage, int> =
     fun client -> async {
         let clientIp = client.Connection.Context.Connection.RemoteIpAddress.ToString()
         return 0, fun state msg -> async {
-            eprintfn "Received message #%i from %s" state clientIp
+            dprintfn "Received message #%i from %s" state clientIp
             match msg with
             | Message data -> 
                 match data with
@@ -51,17 +51,11 @@ let Start() : StatefulAgent<S2CMessage, C2SMessage, int> =
                 | Request2 x -> do! client.PostAsync (Response2 x.[0])
                 return state + 1
             | Error exn -> 
-                dprintfn "Error in WebSocket server connected to %s: %s" clientIp exn.Message
+                eprintfn "Error in WebSocket server connected to %s: %s" clientIp exn.Message
                 do! client.PostAsync (Response1 ("Error: " + exn.Message))
                 return state
             | Close ->
-                eprintfn "Closed connection to %s" clientIp
+                dprintfn "Closed connection to %s" clientIp
                 return state
         }
     }
-
-type IWebSocketService =
-    abstract GetClients: unit -> string[]   
-
-//type WebSocketService () =
-    

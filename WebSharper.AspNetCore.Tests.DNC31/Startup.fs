@@ -46,8 +46,9 @@ type Startup() =
         app.UseAuthentication()
             .UseWebSockets()
             .UseWebSharper(fun ws ->
-                ws.UseWebSocket("ws", WebSocketServer.Start(), fun wsws -> 
-                    wsws.JsonEncoding(JsonEncoding.Readable)
+                ws.UseWebSocket("ws", fun wsws -> 
+                    wsws.Use(WebSocketServer.Start())
+                        .JsonEncoding(JsonEncoding.Readable)
                     |> ignore
                 )
                 |> ignore

@@ -9,4 +9,8 @@ packages/
 build/
 .vscode/
 .fake/
-nuget/*.paket.template
+.paket/.store/
+.paket/*.exe
+.paket/fake
+.paket/paket
+.paket/paket.bootstrapper

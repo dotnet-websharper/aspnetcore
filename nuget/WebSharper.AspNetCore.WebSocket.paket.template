@@ -1,0 +1,17 @@
+type file
+id WebSharper.AspNetCore.WebSocket
+authors
+    IntelliFactory
+owners
+    IntelliFactory
+licenseUrl http://websharper.com/licensing
+projectUrl https://github.com/intellifactory/websharper.aspnetcore
+description
+    Server and client-side utilities for WebSocket communication in WebSharper ASP.NET Core projects
+tags
+    Web JavaScript F# C#
+files
+    ../WebSharper.AspNetCore.WebSocket/bin/Release/netstandard2.0/WebSharper.AspNetCore.WebSocket.dll ==> lib/netstandard2.0
+    ../WebSharper.AspNetCore.WebSocket/bin/Release/netstandard2.0/WebSharper.AspNetCore.WebSocket.xml ==> lib/netstandard2.0
+dependencies
+    WebSharper.AspNetCore CURRENTVERSION

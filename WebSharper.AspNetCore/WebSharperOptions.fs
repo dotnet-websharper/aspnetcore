@@ -244,7 +244,7 @@ type WebSharperBuilder(services: IServiceProvider) =
                 useExtension.Invoke(appBuilder, options)
 
     /// Builds WebSharper options.
-    member this.Build() =
+    member internal this.Build() =
         let o = WebSharperOptions.Create(services, _sitelet, _config, _logger, _binDir, _useSitelets, _useRemoting, _useExtension)
         _authScheme |> Option.iter (fun s -> o.AuthenticationScheme <- s)
         o

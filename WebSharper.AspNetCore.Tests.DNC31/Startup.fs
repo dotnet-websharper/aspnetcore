@@ -46,7 +46,10 @@ type Startup() =
         app.UseAuthentication()
             .UseWebSockets()
             .UseWebSharper(fun ws ->
-                ws.UseWebSocket(WebSocketServer.MyEndPoint, WebSocketServer.Start())
+                ws.UseWebSocket("ws", WebSocketServer.Start(), fun wsws -> 
+                    wsws.JsonEncoding(JsonEncoding.Readable)
+                    |> ignore
+                )
                 |> ignore
             )
             .UseStaticFiles()

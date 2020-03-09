@@ -29,7 +29,7 @@ open WebSharper.AspNetCore.WebSocket.Client
 module Server = WebSocketServer
 
 [<JavaScript>]
-let WebSocketTest (endpoint : Endpoint<Server.S2CMessage, Server.C2SMessage>) =
+let WebSocketTest (endpoint : WebSocketEndpoint<Server.S2CMessage, Server.C2SMessage>) =
     let container = Elt.pre [] []
     let writen fmt =
         Printf.ksprintf (fun s ->
@@ -85,5 +85,5 @@ let WebSocketTest (endpoint : Endpoint<Server.S2CMessage, Server.C2SMessage>) =
 
 open WebSharper.AspNetCore.WebSocket
 
-let MyEndPoint (url: string) : WebSharper.AspNetCore.WebSocket.Endpoint<Server.S2CMessage, Server.C2SMessage> = 
-    Endpoint.Create(url, "/ws", JsonEncoding.Readable)
+let MyEndPoint (url: string) : WebSharper.AspNetCore.WebSocket.WebSocketEndpoint<Server.S2CMessage, Server.C2SMessage> = 
+    WebSocketEndpoint.Create(url, "/ws", JsonEncoding.Readable)

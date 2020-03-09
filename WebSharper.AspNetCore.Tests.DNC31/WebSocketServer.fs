@@ -60,7 +60,8 @@ let Start() : StatefulAgent<S2CMessage, C2SMessage, int> =
         }
     }
 
-open WebSharper.AspNetCore.WebSocket
+type IWebSocketService =
+    abstract GetClients: unit -> string[]   
 
-let MyEndPoint : WebSharper.AspNetCore.WebSocket.Endpoint<S2CMessage, C2SMessage> = 
-    Endpoint.Create("https://anything.com", "/ws", JsonEncoding.Readable)
+//type WebSocketService () =
+    

@@ -1,11 +1,7 @@
-FSharp.Core
-WebSharper.FSharp
-WebSharper.UI
-Microsoft.Extensions.Configuration
-Microsoft.Extensions.Logging
-Microsoft.AspNetCore.Authentication.Cookies
-Microsoft.AspNetCore.Diagnostics
-Microsoft.Extensions.Configuration.FileExtensions
-Microsoft.AspNetCore.StaticFiles
-Microsoft.Extensions.Configuration.Json
-Microsoft.AspNetCore
+group testws
+    WebSharper.UI
+    WebSharper.FSharp
+group testnetcore21
+    Microsoft.AspNetCore.Authentication.Cookies
+    Microsoft.AspNetCore.StaticFiles
+    Microsoft.AspNetCore

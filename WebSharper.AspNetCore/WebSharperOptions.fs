@@ -30,6 +30,8 @@ open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open WebSharper.Sitelets
+open Microsoft.AspNetCore.Builder
+
 module Res = WebSharper.Core.Resources
 module Shared = WebSharper.Web.Shared
 
@@ -44,7 +46,8 @@ type WebSharperOptions
         assemblies: Assembly[],
         sitelet: option<Sitelet<obj>>,
         useSitelets: bool,
-        useRemoting: bool
+        useRemoting: bool,
+        useExtension: IApplicationBuilder -> WebSharperOptions -> unit
     ) =
 
     static let tryLoad(name: AssemblyName) =
@@ -109,6 +112,8 @@ type WebSharperOptions
 
     member this.Sitelet = sitelet
 
+    member internal this.UseExtension = useExtension
+
     static member Create
         (
             services: IServiceProvider,
@@ -123,7 +128,7 @@ type WebSharperOptions
             if obj.ReferenceEquals(sitelet, null)
             then None
             else Some (Sitelet.Box sitelet)
-        WebSharperOptions.Create(services, siteletOpt, Option.ofObj config, Option.ofObj logger, Option.ofObj binDir, useSitelets, useRemoting)
+        WebSharperOptions.Create(services, siteletOpt, Option.ofObj config, Option.ofObj logger, Option.ofObj binDir, useSitelets, useRemoting, fun _ _ -> ())
 
     static member internal Create
         (
@@ -133,7 +138,8 @@ type WebSharperOptions
             logger: option<ILogger>,
             binDir: option<string>,
             useSitelets: bool,
-            useRemoting: bool
+            useRemoting: bool,
+            useExtension
         ) =
         let binDir =
             match binDir with
@@ -162,7 +168,7 @@ type WebSharperOptions
                     | service -> Some service.Sitelet
                 )
             else None
-        WebSharperOptions(services, env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet, useSitelets, useRemoting)
+        WebSharperOptions(services, env.ContentRootPath, env.WebRootPath, env.IsDevelopment(), assemblies, sitelet, useSitelets, useRemoting, useExtension)
 
 /// Defines settings for a WebSharper application.
 type WebSharperBuilder(services: IServiceProvider) =
@@ -173,6 +179,7 @@ type WebSharperBuilder(services: IServiceProvider) =
     let mutable _authScheme = None
     let mutable _useSitelets = true
     let mutable _useRemoting = true
+    let mutable _useExtension = fun _ _ -> ()
 
     /// <summary>Defines the sitelet to serve.</summary>
     /// <remarks>
@@ -228,8 +235,16 @@ type WebSharperBuilder(services: IServiceProvider) =
         _useRemoting <- useRemoting
         this
 
+    /// <summary>Adds an extra configuration step to execute that gets final the <c>WebSharperOptions</c> instance.</summary>
+    member this.Use(useExtension: Func<IApplicationBuilder, WebSharperOptions, unit>) =
+        let prev = _useExtension
+        _useExtension <- 
+            fun appBuilder options ->
+                prev appBuilder options
+                useExtension.Invoke(appBuilder, options)
+
     /// Builds WebSharper options.
-    member this.Build() =
-        let o = WebSharperOptions.Create(services, _sitelet, _config, _logger, _binDir, _useSitelets, _useRemoting)
+    member internal this.Build() =
+        let o = WebSharperOptions.Create(services, _sitelet, _config, _logger, _binDir, _useSitelets, _useRemoting, _useExtension)
         _authScheme |> Option.iter (fun s -> o.AuthenticationScheme <- s)
         o

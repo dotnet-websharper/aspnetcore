@@ -1,15 +1,25 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{81013AB3-E234-4DB4-9428-C50C1B2D05C2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{81013AB3-E234-4DB4-9428-C50C1B2D05C2}"
 	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		build.fsx = build.fsx
+		build.sh = build.sh
+		ivy.xml = ivy.xml
+		LICENSE.md = LICENSE.md
 		paket.dependencies = paket.dependencies
+		paket.lock = paket.lock
 	EndProjectSection
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore", "WebSharper.AspNetCore\WebSharper.AspNetCore.fsproj", "{2CBDA62E-44C6-420D-82A1-DBFE2D203127}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests", "WebSharper.AspNetCore.Tests\WebSharper.AspNetCore.Tests.fsproj", "{24C73798-B8A5-4966-ABBE-11822CC9474B}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.WebSocket", "WebSharper.AspNetCore.WebSocket\WebSharper.AspNetCore.WebSocket.fsproj", "{A38A1672-E397-430A-A60E-088F04A2FF54}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.DNC31", "WebSharper.AspNetCore.Tests.DNC31\WebSharper.AspNetCore.Tests.DNC31.fsproj", "{96EF0EA2-39E7-460D-8063-0ABF871491FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +55,30 @@ Global
 		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|x64.Build.0 = Release|Any CPU
 		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|x86.ActiveCfg = Release|Any CPU
 		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|x86.Build.0 = Release|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|x64.Build.0 = Debug|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|x86.Build.0 = Debug|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Release|x64.ActiveCfg = Release|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Release|x64.Build.0 = Release|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Release|x86.ActiveCfg = Release|Any CPU
+		{A38A1672-E397-430A-A60E-088F04A2FF54}.Release|x86.Build.0 = Release|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Debug|x64.Build.0 = Debug|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Debug|x86.Build.0 = Debug|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Release|x64.ActiveCfg = Release|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Release|x64.Build.0 = Release|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Release|x86.ActiveCfg = Release|Any CPU
+		{96EF0EA2-39E7-460D-8063-0ABF871491FA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

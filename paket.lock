@@ -511,10 +511,10 @@ NUGET
       System.Threading (>= 4.3)
       System.Xml.ReaderWriter (>= 4.3)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.6.1.381)
+    WebSharper (4.6.2.386)
       FSharp.Core (>= 4.2.3)
-    WebSharper.FSharp (4.6.1.381)
-      WebSharper (4.6.1.381)
+    WebSharper.FSharp (4.6.2.386)
+      WebSharper (4.6.2.386)
 
 GROUP build
 STORAGE: NONE

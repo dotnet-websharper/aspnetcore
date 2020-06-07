@@ -511,10 +511,10 @@ NUGET
       System.Threading (>= 4.3)
       System.Xml.ReaderWriter (>= 4.3)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.6.2.386)
+    WebSharper (4.6.4.404)
       FSharp.Core (>= 4.2.3)
-    WebSharper.FSharp (4.6.2.386)
-      WebSharper (4.6.2.386)
+    WebSharper.FSharp (4.6.4.404)
+      WebSharper (4.6.4.404)
 
 GROUP build
 STORAGE: NONE
@@ -1889,4 +1889,4 @@ GROUP wsbuild
 
 GIT
   remote: https://github.com/dotnet-websharper/build-script
-     (611689a6559407e4b277cad41639007c0e294a9a)
+     (c4e21042c178410463620fecd38b9e1064c91c33)

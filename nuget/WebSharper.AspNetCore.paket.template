@@ -19,3 +19,4 @@ dependencies
     Microsoft.AspNetCore.Hosting.Abstractions >= LOCKEDVERSION
     Microsoft.AspNetCore.Authentication.Abstractions >= LOCKEDVERSION
     Microsoft.Extensions.Configuration.Abstractions >= LOCKEDVERSION
+    FSharp.Core >= LOCKEDVERSION

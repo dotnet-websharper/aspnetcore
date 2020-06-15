@@ -44,6 +44,8 @@ group testws
     
     nuget WebSharper.UI prerelease
     nuget WebSharper.FSharp prerelease
+    nuget WebSharper.CSharp prerelease
+    nuget WebSharper.UI.CSharp prerelease
 
 group testnetcore21
     source https://api.nuget.org/v3/index.json

@@ -14,3 +14,4 @@ build/
 .paket/fake
 .paket/paket
 .paket/paket.bootstrapper
+/WebSharper.AspNetCore.Tests.CSharp/Properties

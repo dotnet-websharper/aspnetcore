@@ -4,7 +4,6 @@ RESTRICTION: == netstandard2.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
     FSharp.Core (4.3.4)
-    HtmlAgilityPack (1.7.1) - restriction: || (&& (== netcoreapp2.1) (== netstandard2.0)) (&& (== netcoreapp3.1) (== netstandard2.0))
     Libuv (1.10)
       Microsoft.NETCore.Platforms (>= 1.0.1)
     Microsoft.AspNetCore (2.0)
@@ -514,16 +513,8 @@ NUGET
   remote: https://daily.websharper.com/nuget
     WebSharper (4.7.0.417)
       FSharp.Core (>= 4.2.3)
-    WebSharper.CSharp (4.7.0.417) - restriction: || (&& (== netcoreapp2.1) (== netstandard2.0)) (&& (== netcoreapp3.1) (== netstandard2.0))
-      WebSharper (4.7.0.417)
     WebSharper.FSharp (4.7.0.417)
       WebSharper (4.7.0.417)
-    WebSharper.UI (4.7.0.225) - restriction: || (&& (== netcoreapp2.1) (== netstandard2.0)) (&& (== netcoreapp3.1) (== netstandard2.0))
-      HtmlAgilityPack (>= 1.7.1)
-      WebSharper (>= 4.7 < 4.8)
-    WebSharper.UI.CSharp (4.7.0.225) - restriction: || (&& (== netcoreapp2.1) (== netstandard2.0)) (&& (== netcoreapp3.1) (== netstandard2.0))
-      WebSharper (>= 4.7 < 4.8)
-      WebSharper.UI (4.7.0.225)
 
 GROUP build
 STORAGE: NONE
@@ -1097,6 +1088,23 @@ NUGET
 GROUP testws
 STORAGE: NONE
 RESTRICTION: || (== netcoreapp2.1) (== netcoreapp3.1)
+NUGET
+  remote: https://api.nuget.org/v3/index.json
+    FSharp.Core (5.0)
+    HtmlAgilityPack (1.11.28)
+  remote: https://daily.websharper.com/nuget
+    WebSharper (4.7.0.417)
+      FSharp.Core (>= 4.2.3)
+    WebSharper.CSharp (4.7.0.417)
+      WebSharper (4.7.0.417)
+    WebSharper.FSharp (4.7.0.417)
+      WebSharper (4.7.0.417)
+    WebSharper.UI (4.7.0.225)
+      HtmlAgilityPack (>= 1.7.1)
+      WebSharper (>= 4.7 < 4.8)
+    WebSharper.UI.CSharp (4.7.0.225)
+      WebSharper (>= 4.7 < 4.8)
+      WebSharper.UI (4.7.0.225)
 
 GROUP wsbuild
 

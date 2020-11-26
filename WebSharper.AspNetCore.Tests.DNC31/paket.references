@@ -1,3 +1,2 @@
-group testws
-	WebSharper.UI
-	WebSharper.FSharp
+WebSharper.UI
+WebSharper.FSharp

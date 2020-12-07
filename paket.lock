@@ -511,10 +511,10 @@ NUGET
       System.Threading (>= 4.3)
       System.Xml.ReaderWriter (>= 4.3)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.7.0.417)
+    WebSharper (4.7.0.423)
       FSharp.Core (>= 4.2.3)
-    WebSharper.FSharp (4.7.0.417)
-      WebSharper (4.7.0.417)
+    WebSharper.FSharp (4.7.0.423)
+      WebSharper (4.7.0.423)
 
 GROUP build
 STORAGE: NONE
@@ -690,7 +690,7 @@ NUGET
     NuGet.Protocol (5.8)
       NuGet.Packaging (>= 5.8)
     NuGet.Versioning (5.8)
-    NUglify (1.11.1)
+    NUglify (1.11.4)
     Paket.Core (5.230)
       Chessie (>= 0.6)
       Mono.Cecil (>= 0.10.0-beta6)
@@ -1093,18 +1093,18 @@ NUGET
     FSharp.Core (5.0)
     HtmlAgilityPack (1.11.28)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.7.0.417)
+    WebSharper (4.7.0.423)
       FSharp.Core (>= 4.2.3)
-    WebSharper.CSharp (4.7.0.417)
-      WebSharper (4.7.0.417)
-    WebSharper.FSharp (4.7.0.417)
-      WebSharper (4.7.0.417)
-    WebSharper.UI (4.7.0.225)
+    WebSharper.CSharp (4.7.0.423)
+      WebSharper (4.7.0.423)
+    WebSharper.FSharp (4.7.0.423)
+      WebSharper (4.7.0.423)
+    WebSharper.UI (4.7.0.231)
       HtmlAgilityPack (>= 1.7.1)
       WebSharper (>= 4.7 < 4.8)
-    WebSharper.UI.CSharp (4.7.0.225)
+    WebSharper.UI.CSharp (4.7.0.231)
       WebSharper (>= 4.7 < 4.8)
-      WebSharper.UI (4.7.0.225)
+      WebSharper.UI (4.7.0.231)
 
 GROUP wsbuild
 

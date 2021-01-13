@@ -6,9 +6,10 @@ framework: netstandard2.0
 storage: none
 strategy: min
 
-nuget FSharp.Core 4.3.4
-nuget WebSharper ~> 4.7
-nuget WebSharper.FSharp ~> 4.7
+nuget FSharp.Core 5.0.0
+nuget WebSharper prerelease
+nuget WebSharper.FSharp prerelease
+nuget WebSharper.AspNetCore prerelease
 
 nuget Microsoft.AspNetCore 2.0.0
 
@@ -19,14 +20,15 @@ group testws
     source https://api.nuget.org/v3/index.json
     source https://daily.websharper.com/nuget
 
-    framework: netcoreapp2.1, netcoreapp3.1
+    framework: netcoreapp2.1, netcoreapp3.1, net5.0
 
     storage: none
     
-    nuget WebSharper.UI ~> 4.7
-    nuget WebSharper.FSharp ~> 4.7
-    nuget WebSharper.CSharp ~> 4.7
-    nuget WebSharper.UI.CSharp ~> 4.7
+    nuget WebSharper.UI prerelease
+    nuget WebSharper.FSharp prerelease
+    nuget WebSharper.CSharp prerelease
+    nuget WebSharper.UI.CSharp prerelease
+    nuget WebSharper.AspNetCore prerelease
 
 group testnetcore21
     source https://api.nuget.org/v3/index.json

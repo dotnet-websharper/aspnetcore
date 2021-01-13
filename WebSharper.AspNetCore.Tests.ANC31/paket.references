@@ -1,0 +1,4 @@
+group testws
+	WebSharper.UI
+	WebSharper.FSharp
+    WebSharper.AspNetCore

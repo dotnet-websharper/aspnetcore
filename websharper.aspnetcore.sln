@@ -13,15 +13,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{81013AB3-E234-4D
 		paket.lock = paket.lock
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore", "WebSharper.AspNetCore\WebSharper.AspNetCore.fsproj", "{2CBDA62E-44C6-420D-82A1-DBFE2D203127}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests", "WebSharper.AspNetCore.Tests\WebSharper.AspNetCore.Tests.fsproj", "{24C73798-B8A5-4966-ABBE-11822CC9474B}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.ANC21", "WebSharper.AspNetCore.Tests.ANC21\WebSharper.AspNetCore.Tests.ANC21.fsproj", "{24C73798-B8A5-4966-ABBE-11822CC9474B}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.WebSocket", "WebSharper.AspNetCore.WebSocket\WebSharper.AspNetCore.WebSocket.fsproj", "{A38A1672-E397-430A-A60E-088F04A2FF54}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.DNC31", "WebSharper.AspNetCore.Tests.DNC31\WebSharper.AspNetCore.Tests.DNC31.fsproj", "{96EF0EA2-39E7-460D-8063-0ABF871491FA}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.ANC31", "WebSharper.AspNetCore.Tests.ANC31\WebSharper.AspNetCore.Tests.ANC31.fsproj", "{96EF0EA2-39E7-460D-8063-0ABF871491FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSharper.AspNetCore.Tests.CSharp", "WebSharper.AspNetCore.Tests.CSharp\WebSharper.AspNetCore.Tests.CSharp.csproj", "{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSharper.AspNetCore.Tests.ANC31.CSharp", "WebSharper.AspNetCore.Tests.ANC31.CSharp\WebSharper.AspNetCore.Tests.ANC31.CSharp.csproj", "{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.ANC50", "WebSharper.AspNetCore.Tests.ANC50\WebSharper.AspNetCore.Tests.ANC50.fsproj", "{2E600DE2-C05A-41F1-B263-F2A843BBF713}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSharper.AspNetCore.Tests.ANC50.CSharp", "WebSharper.AspNetCore.Tests.ANC50.CSharp\WebSharper.AspNetCore.Tests.ANC50.CSharp.csproj", "{B4129C25-45C3-4BAB-B5DD-968CA569739B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,18 +35,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Debug|x64.Build.0 = Debug|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Debug|x86.Build.0 = Debug|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Release|x64.ActiveCfg = Release|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Release|x64.Build.0 = Release|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Release|x86.ActiveCfg = Release|Any CPU
-		{2CBDA62E-44C6-420D-82A1-DBFE2D203127}.Release|x86.Build.0 = Release|Any CPU
 		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -93,6 +83,30 @@ Global
 		{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}.Release|x64.Build.0 = Release|Any CPU
 		{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}.Release|x86.Build.0 = Release|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Debug|x64.Build.0 = Debug|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Release|x64.ActiveCfg = Release|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Release|x64.Build.0 = Release|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Release|x86.ActiveCfg = Release|Any CPU
+		{2E600DE2-C05A-41F1-B263-F2A843BBF713}.Release|x86.Build.0 = Release|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Debug|x64.Build.0 = Debug|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Debug|x86.Build.0 = Debug|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Release|x64.Build.0 = Release|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Release|x86.ActiveCfg = Release|Any CPU
+		{B4129C25-45C3-4BAB-B5DD-968CA569739B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

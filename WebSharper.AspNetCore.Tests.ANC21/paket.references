@@ -1,0 +1,8 @@
+group testws
+    WebSharper.UI
+    WebSharper.FSharp
+    WebSharper.AspNetCore
+group testnetcore21
+    Microsoft.AspNetCore.Authentication.Cookies
+    Microsoft.AspNetCore.StaticFiles
+    Microsoft.AspNetCore

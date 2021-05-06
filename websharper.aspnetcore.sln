@@ -23,6 +23,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSharper.AspNetCore.Tests.CSharp", "WebSharper.AspNetCore.Tests.CSharp\WebSharper.AspNetCore.Tests.CSharp.csproj", "{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}"
 EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.DNC50", "WebSharper.AspNetCore.Tests.DNC50\WebSharper.AspNetCore.Tests.DNC50.fsproj", "{432226B4-437B-4623-A831-42EF9A0A4C15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,18 @@ Global
 		{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}.Release|x64.Build.0 = Release|Any CPU
 		{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{2F5C38E4-F883-475D-99FA-75E3BE6B2DC9}.Release|x86.Build.0 = Release|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Debug|x64.Build.0 = Debug|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Debug|x86.Build.0 = Debug|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Release|x64.ActiveCfg = Release|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Release|x64.Build.0 = Release|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Release|x86.ActiveCfg = Release|Any CPU
+		{432226B4-437B-4623-A831-42EF9A0A4C15}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

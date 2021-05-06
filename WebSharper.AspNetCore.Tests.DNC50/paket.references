@@ -1,0 +1,3 @@
+group testws
+	WebSharper.UI
+	WebSharper.FSharp

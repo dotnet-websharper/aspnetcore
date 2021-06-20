@@ -35,7 +35,6 @@ let private writeResponseAsync (resp: Http.Response) (out: HttpResponse) : Async
                     [| for h in hs -> h.Value |]
                     |> Microsoft.Extensions.Primitives.StringValues
                 out.Headers.Append(name, values)
-            WebSharper.Sitelets.Content.AutoFlushPageWriter <- false
             resp.WriteBody(memStr :> Stream)
             memStr.Seek(0L, SeekOrigin.Begin) |> ignore
         do! memStr.CopyToAsync(out.Body) |> Async.AwaitTask    

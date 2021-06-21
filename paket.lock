@@ -511,11 +511,11 @@ NUGET
       System.Threading (>= 4.3)
       System.Xml.ReaderWriter (>= 4.3)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.7.2.442)
+    WebSharper (4.7.2.444)
       FSharp.Core (>= 4.2.3)
       System.Reflection.Emit.Lightweight (>= 4.3)
-    WebSharper.FSharp (4.7.2.442)
-      WebSharper (4.7.2.442)
+    WebSharper.FSharp (4.7.2.444)
+      WebSharper (4.7.2.444)
 
 GROUP testnetcore21
 STORAGE: NONE
@@ -827,19 +827,19 @@ NUGET
     HtmlAgilityPack (1.11.34)
     System.Reflection.Emit.Lightweight (4.7)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.7.2.442)
+    WebSharper (4.7.2.444)
       FSharp.Core (>= 4.2.3)
       System.Reflection.Emit.Lightweight (>= 4.3)
-    WebSharper.CSharp (4.7.2.442)
-      WebSharper (4.7.2.442)
-    WebSharper.FSharp (4.7.2.442)
-      WebSharper (4.7.2.442)
-    WebSharper.UI (4.7.2.239)
-      HtmlAgilityPack (>= 1.7.1)
+    WebSharper.CSharp (4.7.2.444)
+      WebSharper (4.7.2.444)
+    WebSharper.FSharp (4.7.2.444)
+      WebSharper (4.7.2.444)
+    WebSharper.UI (4.7.2.241)
+      HtmlAgilityPack (>= 1.11)
       WebSharper (>= 4.7.2 < 4.8)
-    WebSharper.UI.CSharp (4.7.2.239)
+    WebSharper.UI.CSharp (4.7.2.241)
       WebSharper (>= 4.7.2 < 4.8)
-      WebSharper.UI (4.7.2.239)
+      WebSharper.UI (4.7.2.241)
 
 GROUP wsbuild
 

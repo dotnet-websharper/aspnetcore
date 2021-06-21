@@ -7,8 +7,8 @@ storage: none
 strategy: min
 
 nuget FSharp.Core 4.3.4
-nuget WebSharper ~> 4.7
-nuget WebSharper.FSharp ~> 4.7
+nuget WebSharper prerelease
+nuget WebSharper.FSharp prerelease
 
 nuget Microsoft.AspNetCore 2.0.0
 
@@ -23,10 +23,10 @@ group testws
 
     storage: none
     
-    nuget WebSharper.UI ~> 4.7
-    nuget WebSharper.FSharp ~> 4.7
-    nuget WebSharper.CSharp ~> 4.7
-    nuget WebSharper.UI.CSharp ~> 4.7
+    nuget WebSharper.UI prerelease
+    nuget WebSharper.FSharp prerelease
+    nuget WebSharper.CSharp prerelease
+    nuget WebSharper.UI.CSharp prerelease
 
 group testnetcore21
     source https://api.nuget.org/v3/index.json

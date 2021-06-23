@@ -511,11 +511,11 @@ NUGET
       System.Threading (>= 4.3)
       System.Xml.ReaderWriter (>= 4.3)
   remote: https://daily.websharper.com/nuget
-    WebSharper (4.7.2.444)
+    WebSharper (4.7.2.445)
       FSharp.Core (>= 4.2.3)
       System.Reflection.Emit.Lightweight (>= 4.3)
-    WebSharper.FSharp (4.7.2.444)
-      WebSharper (4.7.2.444)
+    WebSharper.FSharp (4.7.2.445)
+      WebSharper (4.7.2.445)
 
 GROUP testnetcore21
 STORAGE: NONE

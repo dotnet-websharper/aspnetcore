@@ -1,4 +1,5 @@
 source https://api.nuget.org/v3/index.json
+source https://nuget.pkg.github.com/dotnet-websharper/index.json
 source ../localnuget
 
 framework: netstandard2.0, netcoreapp2.1, netcoreapp3.1, net5.0

@@ -1,5 +1,5 @@
 source https://api.nuget.org/v3/index.json
-source https://daily.websharper.com/nuget
+source ../localnuget
 
 framework: netstandard2.0
 
@@ -14,11 +14,11 @@ nuget WebSharper.AspNetCore prerelease
 nuget Microsoft.AspNetCore 2.0.0
 
 group wsbuild
-    git https://github.com/dotnet-websharper/build-script dotnettool
+    git https://github.com/dotnet-websharper/build-script websharper50
 
 group testws
     source https://api.nuget.org/v3/index.json
-    source https://daily.websharper.com/nuget
+    source ../localnuget
 
     framework: netcoreapp2.1, netcoreapp3.1, net5.0
 

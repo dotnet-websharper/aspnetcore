@@ -40,14 +40,11 @@ let WebSocketTest (endpoint : WebSocketEndpoint<Server.S2CMessage, Server.C2SMes
     async {
         do
             writen "Checking regression #4..."
-            JQuery.JQuery.Ajax(
-                JQuery.AjaxSettings(
-                    Url = "/ws.txt",
-                    Method = JQuery.RequestType.GET,
-                    Success = (fun x _ _ -> writen "%s" (x :?> _)),
-                    Error = (fun _ _ e -> writen "KO: %s." e)
-                )
-            ) |> ignore
+            let request = WebSharper.JavaScript.XMLHttpRequest()
+            request.Onerror <- fun ev -> writen "KO: %s." request.StatusText
+            request.Onload <- fun ev -> writen "%s." request.ResponseText
+            request.Open("GET", "/ws.txt")
+            request.Send()
 
         let! server =
             ConnectStateful endpoint <| fun server -> async {

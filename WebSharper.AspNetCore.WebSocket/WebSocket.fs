@@ -418,7 +418,7 @@ module private Middleware =
         (
             route: string,
             agent: Server.Agent<'S2C, 'C2S>, 
-            wsOptions, 
+            wsOptions: WebSharperOptions, 
             jsonEncoding: JsonEncoding,
             maxMessageSize : option<int> 
             //onAuth: Func<HttpRequest, bool>,
@@ -427,7 +427,7 @@ module private Middleware =
         : Func<HttpContext, Func<Task>, Task> =
         let json =
             match jsonEncoding with
-            | JsonEncoding.Typed -> WebSharper.Web.Shared.Json
+            | JsonEncoding.Typed -> wsOptions.Json
             | JsonEncoding.Readable -> WebSharper.Web.Shared.PlainJson
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
             let ctx = Context.GetOrMake httpCtx wsOptions

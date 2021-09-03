@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta chartset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta name="generator" content="WebSharper" />
+        <meta ws-replace="meta" />
+        <style ws-replace="styles"></style>
+        <title>My TODO list</title>
+        <style>
+            h1 {
+                margin-top: 0;
+                margin-bottom: 30px;
+            }
+
+            ul {
+                border-bottom: 1px solid lightgray;
+                padding-bottom: 30px;
+            }
+
+                ul > li + li {
+                    border-top: 1px dotted lightgray;
+                }
+
+            label {
+                width: 100%;
+                font-weight: bold !important;
+            }
+
+            body {
+                padding: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="width: 400px">
+            <h1>My TODO list</h1>
+            <div id="tasks"></div>
+            <div ws-hole="Main" ws-children-template="Body">
+                <ul class="list-unstyled" ws-hole="ListContainer">
+                    <li ws-template="ListItem">
+                        <div class="checkbox">
+                            <label ws-attr="ShowDone">
+                                <input type="checkbox" ws-var="Done" />
+                                ${Task}
+                                <button class="btn btn-danger btn-xs pull-right" type="button" ws-onclick="Clear">X</button>
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+                <form onsubmit="return false">
+                    <div class="form-group">
+                        <label>New task</label>
+                        <div class="input-group">
+                            <input class="form-control" ws-var="NewTaskName" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" ws-onclick="Add">Add</button>
+                            </span>
+                        </div>
+                        <p class="help-block">You are going to add: ${NewTaskName}<span></span></p>
+                    </div>
+                    <button class="btn btn-default" type="button" ws-onclick="ClearCompleted">Clear selected tasks</button>
+                </form>
+                <input class="form-control" ws-var="Login" />
+                <button class="btn btn-default" ws-onclick="DoLogin">Log in</button>
+                <button class="btn btn-default" ws-onclick="GetLogin">Get current login</button>
+                <button class="btn btn-default" ws-onclick="Logout">Log out</button>
+                <div>
+                    <a href="${AboutPageLink}">Go to about page</a>
+                </div>
+            </div>
+        </div>
+        <script ws-replace="scripts"></script>
+    </body>
+</html>

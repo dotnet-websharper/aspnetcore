@@ -425,12 +425,21 @@ module private Middleware =
             //onAuthAsync: Func<HttpRequest, bool>
         ) 
         : Func<HttpContext, Func<Task>, Task> =
+        let wsService = 
+            match wsOptions.Services.GetService(typeof<IWebSharperService>) with
+            | :? IWebSharperService as s -> s
+            | _ ->
+                let meta =
+                    match wsOptions.Metadata with
+                    | Some m -> m
+                    | _ -> Unchecked.defaultof<WebSharper.Core.Metadata.Info>
+                DefaultWebSharperService(wsOptions.SiteletAssembly, meta, wsOptions.AuthenticationScheme, wsOptions.Configuration) :> IWebSharperService
         let json =
             match jsonEncoding with
-            | JsonEncoding.Typed -> wsOptions.Json
+            | JsonEncoding.Typed -> wsService.Json
             | JsonEncoding.Readable -> WebSharper.Web.Shared.PlainJson
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
-            let ctx = Context.GetOrMake httpCtx wsOptions
+            let ctx = Context.GetOrMakeSimple httpCtx wsService wsOptions.IsDebug wsOptions.ContentRootPath
             let ep = (if route.StartsWith "/" then "" else "/") + route 
             if httpCtx.Request.Path.HasValue && httpCtx.Request.Path.Value = ep && httpCtx.WebSockets.IsWebSocketRequest then
                 let conn = WebSharperWebSocketConnection(maxMessageSize, ctx, json, agent)

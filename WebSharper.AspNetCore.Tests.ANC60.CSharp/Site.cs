@@ -8,7 +8,7 @@ using WebSharper.Sitelets;
 using WebSharper.UI;
 using static WebSharper.UI.Html;
 
-namespace WebSharper.AspNetCore.Tests.ANC50.CSharp
+namespace WebSharper.AspNetCore.Tests.ANC60.CSharp
 {
     public class Site
     {

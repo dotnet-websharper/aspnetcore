@@ -9,7 +9,7 @@ using WebSharper.UI;
 using WebSharper.UI.Client;
 using static WebSharper.UI.Client.Html;
 
-namespace WebSharper.AspNetCore.Tests.ANC50.CSharp
+namespace WebSharper.AspNetCore.Tests.ANC60.CSharp
 {
     [JavaScript]
     public static class Client

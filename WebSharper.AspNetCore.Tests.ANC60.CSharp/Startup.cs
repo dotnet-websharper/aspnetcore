@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebSharper.AspNetCore;
 
-namespace WebSharper.AspNetCore.Tests.ANC50.CSharp
+namespace WebSharper.AspNetCore.Tests.ANC60.CSharp
 {
     public class Startup
     {

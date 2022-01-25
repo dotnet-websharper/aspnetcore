@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using WebSharper;
 
-namespace WebSharper.AspNetCore.Tests.ANC50.CSharp
+namespace WebSharper.AspNetCore.Tests.ANC60.CSharp
 {
     public static class Remoting
     {

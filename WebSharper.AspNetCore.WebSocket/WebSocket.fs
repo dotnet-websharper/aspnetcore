@@ -429,11 +429,7 @@ module private Middleware =
             match wsOptions.Services.GetService(typeof<IWebSharperService>) with
             | :? IWebSharperService as s -> s
             | _ ->
-                let meta =
-                    match wsOptions.Metadata with
-                    | Some m -> m
-                    | _ -> Unchecked.defaultof<WebSharper.Core.Metadata.Info>
-                DefaultWebSharperService(wsOptions.SiteletAssembly, meta, wsOptions.AuthenticationScheme, wsOptions.Configuration) :> IWebSharperService
+                failwith "IWebSharperService not found. Use AddWebSharper in your ConfigureServices."
         let json =
             match jsonEncoding with
             | JsonEncoding.Typed -> wsService.Json

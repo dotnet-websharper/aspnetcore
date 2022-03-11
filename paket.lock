@@ -3,7 +3,7 @@ STRATEGY: MIN
 RESTRICTION: || (== net5.0) (== net6.0) (== netcoreapp2.1) (== netcoreapp3.1) (== netstandard2.0)
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    FSharp.Core (6.0.1)
+    FSharp.Core (6.0.3)
     HtmlAgilityPack (1.11)
       System.Net.Http (>= 4.3.2)
       System.Xml.XmlDocument (>= 4.3)
@@ -428,29 +428,29 @@ NUGET
       System.Xml.ReaderWriter (>= 4.3)
       System.Xml.XmlDocument (>= 4.3)
       System.Xml.XPath (>= 4.3)
-  remote: https://nuget.pkg.github.com/dotnet-websharper/index.json
-    WebSharper (6.0.0.143)
-      FSharp.Core (>= 6.0.1)
+  remote: ../localnuget
+    WebSharper (6.0.0.157)
+      FSharp.Core (>= 6.0.3)
       Microsoft.AspNetCore.Mvc.Abstractions (>= 2.0)
       System.Configuration.ConfigurationManager (>= 4.7)
       System.Reflection.Emit.Lightweight (>= 4.7)
-    WebSharper.AspNetCore (6.0.0.143)
+    WebSharper.AspNetCore (6.0.0.157)
       Microsoft.AspNetCore.Authentication.Abstractions (>= 2.0)
       Microsoft.AspNetCore.Hosting.Abstractions (>= 2.0)
-      WebSharper (6.0.0.143)
-    WebSharper.CSharp (6.0.0.143)
-      WebSharper (6.0.0.143)
-    WebSharper.FSharp (6.0.0.143)
-      WebSharper (6.0.0.143)
-    WebSharper.UI (6.0.0.143)
+      WebSharper (6.0.0.157)
+    WebSharper.CSharp (6.0.0.157)
+      WebSharper (6.0.0.157)
+    WebSharper.FSharp (6.0.0.157)
+      WebSharper (6.0.0.157)
+    WebSharper.UI (6.0.0.157)
       HtmlAgilityPack (>= 1.11)
       WebSharper (>= 6.0 < 6.1)
-    WebSharper.UI.CSharp (6.0.0.143)
+    WebSharper.UI.CSharp (6.0.0.157)
       WebSharper (>= 6.0 < 6.1)
-      WebSharper.UI (6.0.0.143)
+      WebSharper.UI (6.0.0.157)
 
 GROUP wsbuild
 
 GIT
   remote: https://github.com/dotnet-websharper/build-script
-     (3f1320b6f18c663fd395803eb79409ad102231ac)
+     (f028af07cf019553ae078fef9afc3706aa16c98c)

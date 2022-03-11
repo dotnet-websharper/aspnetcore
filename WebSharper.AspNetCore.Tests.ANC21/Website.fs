@@ -143,5 +143,5 @@ type MyWebsite(logger: ILogger<MyWebsite>) =
         | FormData i ->
             Content.Text i
         | Post ->
-            Content.Text ctx.Request.BodyText
+            Content.Text ctx.Request.BodyText.Result
     )

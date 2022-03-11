@@ -435,7 +435,7 @@ module private Middleware =
             | JsonEncoding.Typed -> wsService.Json
             | JsonEncoding.Readable -> WebSharper.Web.Shared.PlainJson
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
-            let ctx = Context.GetOrMakeSimple httpCtx wsService wsOptions.IsDebug wsOptions.ContentRootPath
+            let ctx = Context.GetOrMakeSimple httpCtx wsService wsOptions.ContentRootPath
             let ep = (if route.StartsWith "/" then "" else "/") + route 
             if httpCtx.Request.Path.HasValue && httpCtx.Request.Path.Value = ep && httpCtx.WebSockets.IsWebSocketRequest then
                 let conn = WebSharperWebSocketConnection(maxMessageSize, ctx, json, agent)

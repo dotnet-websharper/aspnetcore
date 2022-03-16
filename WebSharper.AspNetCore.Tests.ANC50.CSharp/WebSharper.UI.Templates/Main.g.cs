@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.FSharp.Core;
 using WebSharper;
 using WebSharper.UI;
@@ -17,6 +18,7 @@ using WebSharper.UI.Templating;
 using SDoc = WebSharper.UI.Doc;
 using DomElement = WebSharper.JavaScript.Dom.Element;
 using DomEvent = WebSharper.JavaScript.Dom.Event;
+using static WebSharper.UI.Templating.Runtime.Server;
 namespace WebSharper.AspNetCore.Tests.ANC50.CSharp.Template
 {
     [JavaScript]
@@ -25,6 +27,22 @@ namespace WebSharper.AspNetCore.Tests.ANC50.CSharp.Template
         string key = System.Guid.NewGuid().ToString();
         List<TemplateHole> holes = new List<TemplateHole>();
         Instance instance;
+        FSharpOption<IRequiresResources> templateInitialzier = FSharpOption<IRequiresResources>.None;
+        public Main()
+        {
+            var completed = WebSharper.UI.Templating.Runtime.Server.Handler.CompleteHoles(key, holes, new Tuple<string, WebSharper.UI.Templating.Runtime.Server.ValTy>[] {  });
+            if (WebSharper.Pervasives.IsClient) { }
+            else
+            {
+                if (completed.Item2 is CompletedHoles.Server s)
+                {
+                    if (s.Item is FSharpOption<TemplateInitializer> v)
+                    {
+                        templateInitialzier = v.Value;
+                    }
+                }
+            }
+        }
         public Main Title(string x) { holes.Add(TemplateHole.NewText("title", x)); return this; }
         public Main Title(View<string> x) { holes.Add(TemplateHole.NewTextView("title", x)); return this; }
         public Main MenuBar(Doc x) { holes.Add(TemplateHole.NewElt("menubar", x)); return this; }
@@ -44,13 +62,11 @@ namespace WebSharper.AspNetCore.Tests.ANC50.CSharp.Template
         public Main scripts(View<string> x) { holes.Add(TemplateHole.NewTextView("scripts", x)); return this; }
         public struct Vars
         {
-            public Vars(Instance i) { instance = i; }
-            readonly Instance instance;
         }
         public class Instance : WebSharper.UI.Templating.Runtime.Server.TemplateInstance
         {
             public Instance(WebSharper.UI.Templating.Runtime.Server.CompletedHoles v, Doc d) : base(v, d) { }
-            public Vars Vars => new Vars(this);
+            public Vars Vars => JavaScript.Pervasives.As<Vars>(this);
         }
         public Instance Create() {
             var completed = WebSharper.UI.Templating.Runtime.Server.Handler.CompleteHoles(key, holes, new Tuple<string, WebSharper.UI.Templating.Runtime.Server.ValTy>[] {  });

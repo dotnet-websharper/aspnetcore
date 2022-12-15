@@ -48,10 +48,14 @@ namespace WebSharper.AspNetCore.Tests.ANC50.CSharp.Template
         public struct Vars
         {
         }
+        public struct Anchors
+        {
+        }
         public class Instance : TemplateInstance
         {
             public Instance(CompletedHoles v, Doc d) : base(v, d) { }
             public Vars Vars => As<Vars>(this);
+            public Anchors Anchors => As<Anchors>(this);
         }
         public Instance Create() {
             var (completed, initializer) = Handler.CompleteHoles(key, holes, new Tuple<string, ValTy, FSharpOption<object>>[] {  });

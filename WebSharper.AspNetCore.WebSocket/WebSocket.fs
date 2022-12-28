@@ -124,7 +124,9 @@ module Client =
     let getEncoding (encode: 'C2S -> string) (decode: string -> 'S2C) (jsonEncoding: JsonEncoding) =
         let encode, decode =
             match jsonEncoding with
-            | JsonEncoding.Typed -> Json.Stringify, Json.Parse >> Json.Activate
+            | JsonEncoding.Typed -> 
+                // TODO do module imports
+                Json.Stringify, fun x -> Json.Activate (Json.Parse x) [||]
             | _ -> encode, decode
         let decode (msg: MessageEvent) = decode (As<string> msg.Data)
         encode, decode

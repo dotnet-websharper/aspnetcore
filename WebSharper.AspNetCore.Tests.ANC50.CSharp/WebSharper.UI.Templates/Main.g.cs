@@ -28,23 +28,23 @@ namespace WebSharper.AspNetCore.Tests.ANC50.CSharp.Template
         string key = System.Guid.NewGuid().ToString();
         List<TemplateHole> holes = new List<TemplateHole>();
         Instance instance;
-        public Main Title(string x) { holes.Add(TemplateHole.NewText("title", x)); return this; }
-        public Main Title(View<string> x) { holes.Add(TemplateHole.NewTextView("title", x)); return this; }
-        public Main MenuBar(Doc x) { holes.Add(TemplateHole.NewElt("menubar", x)); return this; }
-        public Main MenuBar(IEnumerable<Doc> x) { holes.Add(TemplateHole.NewElt("menubar", SDoc.Concat(x))); return this; }
-        public Main MenuBar(params Doc[] x) { holes.Add(TemplateHole.NewElt("menubar", SDoc.Concat(x))); return this; }
-        public Main MenuBar(string x) { holes.Add(TemplateHole.NewText("menubar", x)); return this; }
-        public Main MenuBar(View<string> x) { holes.Add(TemplateHole.NewTextView("menubar", x)); return this; }
-        public Main Body(Doc x) { holes.Add(TemplateHole.NewElt("body", x)); return this; }
-        public Main Body(IEnumerable<Doc> x) { holes.Add(TemplateHole.NewElt("body", SDoc.Concat(x))); return this; }
-        public Main Body(params Doc[] x) { holes.Add(TemplateHole.NewElt("body", SDoc.Concat(x))); return this; }
-        public Main Body(string x) { holes.Add(TemplateHole.NewText("body", x)); return this; }
-        public Main Body(View<string> x) { holes.Add(TemplateHole.NewTextView("body", x)); return this; }
-        public Main scripts(Doc x) { holes.Add(TemplateHole.NewElt("scripts", x)); return this; }
-        public Main scripts(IEnumerable<Doc> x) { holes.Add(TemplateHole.NewElt("scripts", SDoc.Concat(x))); return this; }
-        public Main scripts(params Doc[] x) { holes.Add(TemplateHole.NewElt("scripts", SDoc.Concat(x))); return this; }
-        public Main scripts(string x) { holes.Add(TemplateHole.NewText("scripts", x)); return this; }
-        public Main scripts(View<string> x) { holes.Add(TemplateHole.NewTextView("scripts", x)); return this; }
+        public Main Title(string x) { holes.Add(new TemplateHoleModule.Text("title", x)); return this; }
+        public Main Title(View<string> x) { holes.Add(new TemplateHoleModule.TextView("title", x)); return this; }
+        public Main MenuBar(Doc x) { holes.Add(new TemplateHoleModule.Elt("menubar", x)); return this; }
+        public Main MenuBar(IEnumerable<Doc> x) { holes.Add(new TemplateHoleModule.Elt("menubar", SDoc.Concat(x))); return this; }
+        public Main MenuBar(params Doc[] x) { holes.Add(new TemplateHoleModule.Elt("menubar", SDoc.Concat(x))); return this; }
+        public Main MenuBar(string x) { holes.Add(new TemplateHoleModule.Text("menubar", x)); return this; }
+        public Main MenuBar(View<string> x) { holes.Add(new TemplateHoleModule.TextView("menubar", x)); return this; }
+        public Main Body(Doc x) { holes.Add(new TemplateHoleModule.Elt("body", x)); return this; }
+        public Main Body(IEnumerable<Doc> x) { holes.Add(new TemplateHoleModule.Elt("body", SDoc.Concat(x))); return this; }
+        public Main Body(params Doc[] x) { holes.Add(new TemplateHoleModule.Elt("body", SDoc.Concat(x))); return this; }
+        public Main Body(string x) { holes.Add(new TemplateHoleModule.Text("body", x)); return this; }
+        public Main Body(View<string> x) { holes.Add(new TemplateHoleModule.TextView("body", x)); return this; }
+        public Main scripts(Doc x) { holes.Add(new TemplateHoleModule.Elt("scripts", x)); return this; }
+        public Main scripts(IEnumerable<Doc> x) { holes.Add(new TemplateHoleModule.Elt("scripts", SDoc.Concat(x))); return this; }
+        public Main scripts(params Doc[] x) { holes.Add(new TemplateHoleModule.Elt("scripts", SDoc.Concat(x))); return this; }
+        public Main scripts(string x) { holes.Add(new TemplateHoleModule.Text("scripts", x)); return this; }
+        public Main scripts(View<string> x) { holes.Add(new TemplateHoleModule.TextView("scripts", x)); return this; }
         public struct Vars
         {
         }

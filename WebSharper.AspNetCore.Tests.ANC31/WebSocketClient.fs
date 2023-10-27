@@ -83,4 +83,4 @@ let WebSocketTest (endpoint : WebSocketEndpoint<Server.S2CMessage, Server.C2SMes
 open WebSharper.AspNetCore.WebSocket
 
 let MyEndPoint (url: string) : WebSharper.AspNetCore.WebSocket.WebSocketEndpoint<Server.S2CMessage, Server.C2SMessage> = 
-    WebSocketEndpoint.Create(url, "/ws", JsonEncoding.Readable)
+    WebSocketEndpoint.Create(url, "/ws")

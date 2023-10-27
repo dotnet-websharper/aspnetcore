@@ -48,7 +48,6 @@ type Startup() =
             .UseWebSharper(fun ws ->
                 ws.UseWebSocket("ws", fun wsws -> 
                     wsws.Use(WebSocketServer.Start())
-                        .JsonEncoding(JsonEncoding.Readable)
                     |> ignore
                 )
                 |> ignore

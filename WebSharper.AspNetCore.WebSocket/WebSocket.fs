@@ -28,7 +28,7 @@ open WebSharper
 open System.Threading
 open Microsoft.AspNetCore.Builder
 
-[<RequireQualifiedAccess>]
+[<RequireQualifiedAccess; Obsolete("Only Readable json is available in WebSharper 7+")>]
 type JsonEncoding =
     | Typed
     | Readable
@@ -62,18 +62,14 @@ type WebSocketEndpoint<'S2C, 'C2S> [<JavaScript>] (uri : string) =
     [<JavaScript>]
     member this.URI = uri
 
-    // the encoding of messages
-    [<JavaScript>]
+    [<JavaScript; Obsolete("Only Readable json is available in WebSharper 7+")>]
     member val JsonEncoding = JsonEncoding.Typed with get, set
 
     static member Create (baseUrl : string, route : string, [<Optional>] encoding: JsonEncoding) =
         let uri = System.Uri(System.Uri(baseUrl), route)
         let scheme = Helpers.getScheme uri.Scheme
         let wsuri = sprintf "%s://%s%s" scheme uri.Authority uri.AbsolutePath
-        WebSocketEndpoint<'S2C, 'C2S>(
-            wsuri,
-            JsonEncoding = (if isNull (box encoding) then JsonEncoding.Typed else encoding)
-        )
+        WebSocketEndpoint<'S2C, 'C2S>(wsuri)
 
 module MessageCoder =
     module J = WebSharper.Core.Json
@@ -81,7 +77,6 @@ module MessageCoder =
     let ToJString (jP: J.Provider) (msg: 'T) =
         let enc = jP.GetEncoder<'T>()
         enc.Encode msg
-        |> jP.Pack
         |> J.Stringify
 
     let FromJString (jP: J.Provider) str : 'T =
@@ -121,19 +116,15 @@ module Client =
             !isOpen
 
     [<JavaScript>]
-    let getEncoding (encode: 'C2S -> string) (decode: string -> 'S2C) (jsonEncoding: JsonEncoding) =
-        let encode, decode =
-            match jsonEncoding with
-            | JsonEncoding.Typed -> Json.Stringify, Json.Parse >> Json.Activate
-            | _ -> encode, decode
+    let getEncoding (encode: 'C2S -> string) (decode: string -> 'S2C) =
         let decode (msg: MessageEvent) = decode (As<string> msg.Data)
         encode, decode
 
     [<JavaScript>]
     type WithEncoding =
 
-        static member FromWebSocketStateful (encode: 'C2S -> string) (decode: string -> 'S2C) socket (agent : StatefulAgent<'S2C, 'C2S, 'State>) jsonEncoding =
-            let encode, decode = getEncoding encode decode jsonEncoding
+        static member FromWebSocketStateful (encode: 'C2S -> string) (decode: string -> 'S2C) socket (agent : StatefulAgent<'S2C, 'C2S, 'State>) =
+            let encode, decode = getEncoding encode decode
             let flush = cacheSocket socket decode
             let server = WebSocketServer(socket, encode)
             async {
@@ -156,8 +147,8 @@ module Client =
                     if isOpen then ok server
             }
 
-        static member FromWebSocket (encode: 'C2S -> string) (decode: string -> 'S2C) socket (agent : Agent<'S2C, 'C2S>) jsonEncoding =
-            let encode, decode = getEncoding encode decode jsonEncoding
+        static member FromWebSocket (encode: 'C2S -> string) (decode: string -> 'S2C) socket (agent : Agent<'S2C, 'C2S>) =
+            let encode, decode = getEncoding encode decode
             let flush = cacheSocket socket decode
             let server = WebSocketServer(socket, encode)
 
@@ -183,20 +174,20 @@ module Client =
         [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member ConnectStateful encode decode (endpoint : WebSocketEndpoint<'S2C, 'C2S>) (agent : StatefulAgent<'S2C, 'C2S, 'State>) =
             let socket = new WebSocket(endpoint.URI)
-            WithEncoding.FromWebSocketStateful encode decode socket agent endpoint.JsonEncoding
+            WithEncoding.FromWebSocketStateful encode decode socket agent
 
         [<MethodImpl(MethodImplOptions.NoInlining)>]
         static member Connect encode decode (endpoint : WebSocketEndpoint<'S2C, 'C2S>) (agent : Agent<'S2C, 'C2S>) =
             let socket = new WebSocket(endpoint.URI)
-            WithEncoding.FromWebSocket encode decode socket agent endpoint.JsonEncoding
+            WithEncoding.FromWebSocket encode decode socket agent
 
     [<Inline>]
-    let FromWebSocket<'S2C, 'C2S> (socket: WebSocket) (agent: Agent<'S2C, 'C2S>) jsonEncoding =
-        WithEncoding.FromWebSocket Json.Serialize Json.Deserialize socket agent jsonEncoding
+    let FromWebSocket<'S2C, 'C2S> (socket: WebSocket) (agent: Agent<'S2C, 'C2S>) =
+        WithEncoding.FromWebSocket Json.Serialize Json.Deserialize socket agent
 
     [<Inline>]
-    let FromWebSocketStateful<'S2C, 'C2S, 'State> (socket: WebSocket) (agent: StatefulAgent<'S2C, 'C2S, 'State>) jsonEncoding =
-        WithEncoding.FromWebSocketStateful Json.Serialize Json.Deserialize socket agent jsonEncoding
+    let FromWebSocketStateful<'S2C, 'C2S, 'State> (socket: WebSocket) (agent: StatefulAgent<'S2C, 'C2S, 'State>) =
+        WithEncoding.FromWebSocketStateful Json.Serialize Json.Deserialize socket agent
 
     [<Inline>]
     let Connect<'S2C, 'C2S> (endpoint: WebSocketEndpoint<'S2C, 'C2S>) (agent: Agent<'S2C, 'C2S>) =
@@ -419,16 +410,12 @@ module private Middleware =
             route: string,
             agent: Server.Agent<'S2C, 'C2S>, 
             wsOptions: WebSharperOptions, 
-            jsonEncoding: JsonEncoding,
             maxMessageSize : option<int> 
             //onAuth: Func<HttpRequest, bool>,
             //onAuthAsync: Func<HttpRequest, bool>
         ) 
         : Func<HttpContext, Func<Task>, Task> =
-        let json =
-            match jsonEncoding with
-            | JsonEncoding.Typed -> wsOptions.Json
-            | JsonEncoding.Readable -> WebSharper.Web.Shared.PlainJson
+        let json = WebSharper.Web.Shared.PlainJson
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
             let ctx = Context.GetOrMakeSimple httpCtx wsOptions
             let ep = (if route.StartsWith "/" then "" else "/") + route 
@@ -476,7 +463,6 @@ module private Middleware =
 
 type WebSharperWebSocketBuilder() =
     let mutable _maxMessageSize = None
-    let mutable _jsonEncoding = JsonEncoding.Typed
     let mutable onBuild = ignore
     //let mutable _onAuth = Func<HttpRequest, bool>(fun _ -> true)
     //let mutable _onAuthAsync = Func<HttpRequest, Task<bool>>(fun _ -> Task.FromResult(true))
@@ -485,15 +471,15 @@ type WebSharperWebSocketBuilder() =
         _maxMessageSize <- Some maxMessageSize
         this
 
+    [<Obsolete("Only Readable json is available in WebSharper 7+")>]
     member this.JsonEncoding(jsonEncoding: JsonEncoding) =
-        _jsonEncoding <- jsonEncoding
         this
 
     member this.Use(agent: Server.Agent<'S2C, 'C2S>) =
         onBuild <-
             fun (wsBuilder: WebSharperBuilder, route) -> 
                 wsBuilder.Use(fun appBuilder wsOptions ->
-                    appBuilder.Use(Middleware.Create<'S2C, 'C2S>(route, agent, wsOptions, _jsonEncoding, _maxMessageSize))
+                    appBuilder.Use(Middleware.Create<'S2C, 'C2S>(route, agent, wsOptions, _maxMessageSize))
                     |> ignore
                 )
         this

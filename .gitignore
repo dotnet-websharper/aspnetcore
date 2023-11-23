@@ -15,3 +15,4 @@ build/
 .paket/paket
 .paket/paket.bootstrapper
 /WebSharper.AspNetCore.Tests.CSharp/Properties
+websharper.log

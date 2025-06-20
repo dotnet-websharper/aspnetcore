@@ -13,6 +13,7 @@ nuget WebSharper.AspNetCore ~> 9.0
 
 nuget Microsoft.AspNetCore.Hosting.Abstractions 2.0.0 framework: netstandard2.0
 nuget Microsoft.AspNetCore.Authentication.Abstractions 2.0.0 framework: netstandard2.0
+nuget Microsoft.AspNetCore.Html.Abstractions 2.0.0 framework: netstandard2.0
 
 nuget WebSharper.UI ~> 9.0
 nuget WebSharper.UI.CSharp ~> 9.0

@@ -482,6 +482,7 @@ type WebSharperWebSocketBuilder() =
                     appBuilder.Use(Middleware.Create<'S2C, 'C2S>(route, agent, wsOptions, _maxMessageSize))
                     |> ignore
                 )
+                |> ignore
         this
 
     member this.Use(agent: Server.StatefulAgent<'S2C, 'C2S, 'State>) =

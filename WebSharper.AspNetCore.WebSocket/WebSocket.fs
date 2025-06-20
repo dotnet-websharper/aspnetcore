@@ -415,7 +415,7 @@ module private Middleware =
             //onAuthAsync: Func<HttpRequest, bool>
         ) 
         : Func<HttpContext, Func<Task>, Task> =
-        let json = WebSharper.Web.Shared.PlainJson
+        let json = WebSharper.Json.ServerSideProvider
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
             let ctx = Context.GetOrMakeSimple httpCtx wsOptions
             let ep = (if route.StartsWith "/" then "" else "/") + route 

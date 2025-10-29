@@ -409,7 +409,7 @@ module private Middleware =
         (
             route: string,
             agent: Server.Agent<'S2C, 'C2S>, 
-            wsOptions: WebSharperOptions, 
+            initService: IWebSharperInitializationService, 
             maxMessageSize : option<int> 
             //onAuth: Func<HttpRequest, bool>,
             //onAuthAsync: Func<HttpRequest, bool>
@@ -417,7 +417,7 @@ module private Middleware =
         : Func<HttpContext, Func<Task>, Task> =
         let json = WebSharper.Json.ServerSideProvider
         Func<_,_,_>(fun (httpCtx: HttpContext) (next: Func<Task>) -> 
-            let ctx = Context.GetOrMakeSimple httpCtx wsOptions
+            let ctx = Context.GetOrMakeSimple httpCtx initService
             let ep = (if route.StartsWith "/" then "" else "/") + route 
             if httpCtx.Request.Path.HasValue && httpCtx.Request.Path.Value = ep && httpCtx.WebSockets.IsWebSocketRequest then
                 let conn = WebSharperWebSocketConnection(maxMessageSize, ctx, json, agent)
@@ -478,8 +478,8 @@ type WebSharperWebSocketBuilder() =
     member this.Use(agent: Server.Agent<'S2C, 'C2S>) =
         onBuild <-
             fun (wsBuilder: WebSharperBuilder, route) -> 
-                wsBuilder.Use(fun appBuilder wsOptions ->
-                    appBuilder.Use(Middleware.Create<'S2C, 'C2S>(route, agent, wsOptions, _maxMessageSize))
+                wsBuilder.Use(fun appBuilder initService ->
+                    appBuilder.Use(Middleware.Create<'S2C, 'C2S>(route, agent, initService, _maxMessageSize))
                     |> ignore
                 )
                 |> ignore

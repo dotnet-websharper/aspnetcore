@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{81013AB3-E234-4D
 		paket.lock = paket.lock
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.ANC21", "WebSharper.AspNetCore.Tests.ANC21\WebSharper.AspNetCore.Tests.ANC21.fsproj", "{24C73798-B8A5-4966-ABBE-11822CC9474B}"
-EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.WebSocket", "WebSharper.AspNetCore.WebSocket\WebSharper.AspNetCore.WebSocket.fsproj", "{A38A1672-E397-430A-A60E-088F04A2FF54}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "WebSharper.AspNetCore.Tests.ANC31", "WebSharper.AspNetCore.Tests.ANC31\WebSharper.AspNetCore.Tests.ANC31.fsproj", "{96EF0EA2-39E7-460D-8063-0ABF871491FA}"
@@ -39,18 +37,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|x64.Build.0 = Debug|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Debug|x86.Build.0 = Debug|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|x64.ActiveCfg = Release|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|x64.Build.0 = Release|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|x86.ActiveCfg = Release|Any CPU
-		{24C73798-B8A5-4966-ABBE-11822CC9474B}.Release|x86.Build.0 = Release|Any CPU
 		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A38A1672-E397-430A-A60E-088F04A2FF54}.Debug|x64.ActiveCfg = Debug|Any CPU

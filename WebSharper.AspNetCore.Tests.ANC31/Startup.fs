@@ -34,23 +34,29 @@ open WebSharper.AspNetCore.WebSocket
 type Startup() =
 
     member this.ConfigureServices(services: IServiceCollection) =
-        services.AddSitelet<Website.MyWebsite>()
-                .AddWebSharperRemoting<Website.RpcUserSession, Website.RpcUserSessionImpl>()
-                .AddAuthentication("WebSharper")
-                .AddCookie("WebSharper", fun options -> ())
+        services.AddWebSharperServices()
+            .AddRemotingHandler<Website.RpcUserSession, Website.RpcUserSessionImpl>()
+        |> ignore
+        services
+            .AddAuthentication("WebSharper")
+            .AddCookie("WebSharper", fun options -> ())
         |> ignore
 
     member this.Configure(app: IApplicationBuilder, env: IWebHostEnvironment, cfg: IConfiguration) =
         if env.IsDevelopment() then app.UseDeveloperExceptionPage() |> ignore
 
+        let logger = app.ApplicationServices.GetService<ILogger<Website.MyWebsite>>()
+        let myWebsite = Website.MyWebsite(logger)
+
         app.UseAuthentication()
             .UseWebSockets()
             .UseWebSharper(fun ws ->
-                ws.UseWebSocket("ws", fun wsws -> 
-                    wsws.Use(WebSocketServer.Start())
+                ws.Sitelet(myWebsite.Sitelet)
+                    .UseWebSocket("ws", fun wsws -> 
+                        wsws.Use(WebSocketServer.Start())
+                        |> ignore
+                    )
                     |> ignore
-                )
-                |> ignore
             )
             .UseStaticFiles()
             .Run(fun context ->

@@ -125,9 +125,8 @@ type RpcUserSessionImpl(logger: ILogger<RpcUserSessionImpl>) =
 open WebSharper.UI.Server
 
 type MyWebsite(logger: ILogger<MyWebsite>) =
-    inherit SiteletService<EndPoint>()
 
-    override this.Sitelet = Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
+    member this.Sitelet = Application.MultiPage(fun (ctx: Context<_>) (ep: EndPoint) ->
         let readBody() =
             let i = ctx.Request.Body 
             if not (isNull i) then 

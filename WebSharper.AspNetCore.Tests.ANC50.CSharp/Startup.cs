@@ -17,7 +17,8 @@ namespace WebSharper.AspNetCore.Tests.ANC50.CSharp
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSitelet(Site.Main)
+            services
+                .AddWebSharper()
                 .AddAuthentication("WebSharper")
                 .AddCookie("WebSharper", options => { });
         }
@@ -28,7 +29,7 @@ namespace WebSharper.AspNetCore.Tests.ANC50.CSharp
 
             app.UseAuthentication()
                 .UseStaticFiles()
-                .UseWebSharper()
+                .UseWebSharper(ws => ws.Sitelet(Site.Main))
                 .Run(context =>
                 {
                     context.Response.StatusCode = 404;

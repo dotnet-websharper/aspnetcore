@@ -1,6 +1,3 @@
 WebSharper
 WebSharper.FSharp
 WebSharper.AspNetCore
-Microsoft.AspNetCore.Hosting.Abstractions
-Microsoft.AspNetCore.Authentication.Abstractions
-Microsoft.AspNetCore.Html.Abstractions

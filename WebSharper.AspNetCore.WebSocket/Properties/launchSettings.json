@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "WebSharper.AspNetCore.WebSocket": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:7977;http://localhost:7978"
+    }
+  }
+}

@@ -11,8 +11,8 @@ description
 tags
     WebSharper Web JavaScript FSharp CSharp
 dependencies
-    framework: netstandard2.0
+    framework: net5.0
         WebSharper.AspNetCore ~> LOCKEDVERSION:[3]
 files
-    ../WebSharper.AspNetCore.WebSocket/bin/Release/netstandard2.0/WebSharper.AspNetCore.WebSocket.dll ==> lib/netstandard2.0
-    ../WebSharper.AspNetCore.WebSocket/bin/Release/netstandard2.0/WebSharper.AspNetCore.WebSocket.xml ==> lib/netstandard2.0
+    ../WebSharper.AspNetCore.WebSocket/bin/Release/net5.0/WebSharper.AspNetCore.WebSocket.dll ==> lib/netstandard2.0
+    ../WebSharper.AspNetCore.WebSocket/bin/Release/net5.0/WebSharper.AspNetCore.WebSocket.xml ==> lib/netstandard2.0

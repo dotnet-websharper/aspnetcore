@@ -107,10 +107,10 @@ module Client =
     let cacheSocket (socket: WebSocket) decode =
         let cache = Queue()
         let isOpen = ref false
-        socket.Onopen <- fun () -> cache.Enqueue Message.Open; isOpen := true
-        socket.Onclose <- fun () -> cache.Enqueue Message.Close
-        socket.Onmessage <- fun msg -> cache.Enqueue (Message.Message (decode msg))
-        socket.Onerror <- fun () -> cache.Enqueue Message.Error
+        socket.OnOpen <- fun () -> cache.Enqueue Message.Open; isOpen := true
+        socket.OnClose <- fun () -> cache.Enqueue Message.Close
+        socket.OnMessage <- fun msg -> cache.Enqueue (Message.Message (decode msg))
+        socket.OnError <- fun () -> cache.Enqueue Message.Error
         fun post ->
             Seq.iter post cache
             !isOpen
@@ -132,14 +132,14 @@ module Client =
                 let agent = Async.FoldAgent initState func
                 return! Async.FromContinuations <| fun (ok, ko, _) ->
                     let isOpen = flush agent.Post
-                    socket.Onopen <- fun () ->
+                    socket.OnOpen <- fun () ->
                         agent.Post Message.Open
                         ok server
-                    socket.Onclose <- fun () ->
+                    socket.OnClose <- fun () ->
                         agent.Post Message.Close
-                    socket.Onmessage <- fun msg ->
+                    socket.OnMessage <- fun msg ->
                         agent.Post (Message.Message (decode msg))
-                    socket.Onerror <- fun () ->
+                    socket.OnError <- fun () ->
                         agent.Post Message.Error
                         // TODO: test if this is right. Might be called multiple times
                         //       or after ok was already called.
@@ -156,14 +156,14 @@ module Client =
                 let! proc = agent server
                 return! Async.FromContinuations <| fun (ok, ko, _) ->
                     let isOpen = flush proc
-                    socket.Onopen <- fun () ->
+                    socket.OnOpen <- fun () ->
                         proc Message.Open
                         ok server
-                    socket.Onclose <- fun () ->
+                    socket.OnClose <- fun () ->
                         proc Message.Close
-                    socket.Onmessage <- fun msg ->
+                    socket.OnMessage <- fun msg ->
                         proc (Message.Message (decode msg))
-                    socket.Onerror <- fun () ->
+                    socket.OnError <- fun () ->
                         proc Message.Error
                         // TODO: test if this is right. Might be called multiple times
                         //       or after ok was already called.

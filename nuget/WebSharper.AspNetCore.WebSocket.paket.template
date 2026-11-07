@@ -15,4 +15,5 @@ dependencies
         WebSharper.AspNetCore ~> LOCKEDVERSION:[3]
 files
     ../WebSharper.AspNetCore.WebSocket/bin/Release/net5.0/WebSharper.AspNetCore.WebSocket.dll ==> lib/netstandard2.0
+    ../WebSharper.AspNetCore.WebSocket/bin/Release/net5.0/WebSharper.AspNetCore.WebSocket.websharper ==> lib/netstandard2.0
     ../WebSharper.AspNetCore.WebSocket/bin/Release/net5.0/WebSharper.AspNetCore.WebSocket.xml ==> lib/netstandard2.0
